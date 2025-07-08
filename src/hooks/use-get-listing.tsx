@@ -1,7 +1,7 @@
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { getListing } from "@/lib/queries";
 import type { GetListingQueryType } from "@/lib/types";
 import { queryKeys } from "@/lib/utils";
-import { queryOptions, useQuery } from "@tanstack/react-query";
 
 export const getListingQueryOptions = (query: GetListingQueryType) =>
   queryOptions({

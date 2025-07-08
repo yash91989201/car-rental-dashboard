@@ -1,6 +1,7 @@
 import { z } from "zod/v4";
 import { listing } from "@/server/db/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import type { ListingStatusType } from "./types";
 
 // db tables schema
 export const InsertListingSchema = createInsertSchema(listing);
@@ -43,6 +44,24 @@ export const GetListingQuery = z.object({
 });
 
 export const GetListingOutput = z.object({
+  success: z.boolean(),
+  message: z.string(),
+  data: z
+    .object({
+      listing: ListingSchema,
+    })
+    .optional(),
+});
+
+export const UpdateListingStatusQuery = z.object({
+  id: z.cuid2(),
+});
+
+export const UpdateListingStatusInput = z.object({
+  status: z.custom<ListingStatusType>(),
+});
+
+export const UpdateListingStatusOutput = z.object({
   success: z.boolean(),
   message: z.string(),
   data: z

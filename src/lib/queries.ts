@@ -5,6 +5,9 @@ import type {
   GetListingsOutputType,
   GetListingOutputType,
   GetListingQueryType,
+  UpdateListingStatusInputType,
+  UpdateListingStatusOutputType,
+  UpdateListingStatusQueryType,
 } from "@/lib/types";
 
 export const generateMockListings = async (
@@ -51,4 +54,25 @@ export const getListing = async (
   const response = await fetch(`/api/listings/${query.id}`);
 
   return (await response.json()) as GetListingOutputType;
+};
+
+export const updateListingStatus = async (
+  query: UpdateListingStatusQueryType,
+  input: UpdateListingStatusInputType,
+): Promise<UpdateListingStatusOutputType> => {
+  const url = `/api/listings/${query.id}/update-status`;
+
+  const response = await fetch(url, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return (await response.json()) as UpdateListingStatusOutputType;
 };

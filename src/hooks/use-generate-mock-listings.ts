@@ -4,8 +4,8 @@ import { queryClient } from "@/lib/query-client";
 import { queryKeys } from "@/lib/utils";
 import { toast } from "sonner";
 
-export const useGenerateMockListings = () => {
-  return useMutation({
+export const useGenerateMockListings = () =>
+  useMutation({
     mutationFn: generateMockListings,
     onSuccess: ({ message }) => {
       toast.success(message);
@@ -17,4 +17,3 @@ export const useGenerateMockListings = () => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.all() });
     },
   });
-};
