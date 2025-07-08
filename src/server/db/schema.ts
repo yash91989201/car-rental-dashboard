@@ -1,46 +1,71 @@
 import { relations, sql } from "drizzle-orm";
 import { index, primaryKey, sqliteTableCreator } from "drizzle-orm/sqlite-core";
-import { type AdapterAccount } from "next-auth/adapters";
+import type { AdapterAccountType } from "next-auth/adapters";
+import { createId } from "@paralleldrive/cuid2";
+import type { ListingStatusType } from "@/lib/types";
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
 export const createTable = sqliteTableCreator(
   (name) => `car-rental-dashboard_${name}`,
 );
 
-export const posts = createTable(
-  "post",
-  (d) => ({
-    id: d.integer({ mode: "number" }).primaryKey({ autoIncrement: true }),
-    name: d.text({ length: 256 }),
-    createdById: d
-      .text({ length: 255 })
-      .notNull()
-      .references(() => users.id),
-    createdAt: d
-      .integer({ mode: "timestamp" })
-      .default(sql`(unixepoch())`)
-      .notNull(),
-    updatedAt: d.integer({ mode: "timestamp" }).$onUpdate(() => new Date()),
+export const listing = createTable("listing", (d) => ({
+  id: d
+    .text({ length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  carName: d.text({ length: 255 }).notNull(),
+  description: d.text({ length: 255 }).notNull(),
+  owner: d.text({ length: 255 }).notNull(),
+  status: d
+    .text({ length: 32 })
+    .$type<ListingStatusType>()
+    .default("pending")
+    .notNull(),
+  createdAt: d
+    .integer({ mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+  updatedAt: d
+    .integer({ mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+}));
+
+export const auditLog = createTable("audit_log", (d) => ({
+  id: d
+    .text({ length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  adminId: d
+    .text({ length: 255 })
+    .notNull()
+    .references(() => users.id),
+  listingId: d
+    .text({ length: 255 })
+    .notNull()
+    .references(() => listing.id),
+  createdAt: d.integer({ mode: "timestamp" }).default(sql`(unixepoch())`),
+}));
+
+export const auditLogRelations = relations(auditLog, ({ one }) => ({
+  listing: one(listing, {
+    fields: [auditLog.listingId],
+    references: [listing.id],
   }),
-  (t) => [
-    index("created_by_idx").on(t.createdById),
-    index("name_idx").on(t.name),
-  ],
-);
+  admin: one(users, { fields: [auditLog.adminId], references: [users.id] }),
+}));
 
 export const users = createTable("user", (d) => ({
   id: d
     .text({ length: 255 })
     .notNull()
     .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
+    .$defaultFn(() => createId()),
   name: d.text({ length: 255 }),
   email: d.text({ length: 255 }).notNull(),
+  password: d.text({ length: 255 }).notNull(),
   emailVerified: d.integer({ mode: "timestamp" }).default(sql`(unixepoch())`),
   image: d.text({ length: 255 }),
 }));
@@ -56,7 +81,7 @@ export const accounts = createTable(
       .text({ length: 255 })
       .notNull()
       .references(() => users.id),
-    type: d.text({ length: 255 }).$type<AdapterAccount["type"]>().notNull(),
+    type: d.text({ length: 255 }).$type<AdapterAccountType>().notNull(),
     provider: d.text({ length: 255 }).notNull(),
     providerAccountId: d.text({ length: 255 }).notNull(),
     refresh_token: d.text(),

@@ -1,5 +1,8 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
+import bcrypt from "bcrypt";
+import { eq } from "drizzle-orm";
+import Credentials from "next-auth/providers/credentials";
 
 import { db } from "@/server/db";
 import {
@@ -9,12 +12,6 @@ import {
   verificationTokens,
 } from "@/server/db/schema";
 
-/**
- * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
- * object and keep type safety.
- *
- * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
- */
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
@@ -30,13 +27,61 @@ declare module "next-auth" {
   // }
 }
 
-/**
- * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
- *
- * @see https://next-auth.js.org/configuration/options
- */
 export const authConfig = {
-  providers: [],
+  providers: [
+    Credentials({
+      credentials: {
+        email: {},
+        password: {},
+      },
+      authorize: async (credentials) => {
+        try {
+          if (!credentials.email || !credentials.password) {
+            return null;
+          }
+
+          const user = await db.query.users.findFirst({
+            where: eq(users.email, credentials.email as string),
+          });
+
+          if (user) {
+            if (!user.password) {
+              return null;
+            }
+
+            const isPasswordValid = await bcrypt.compare(
+              credentials.password as string,
+              user.password,
+            );
+
+            if (!isPasswordValid) {
+              return null;
+            }
+
+            return user;
+          } else {
+            const hashedPassword = await bcrypt.hash(
+              credentials.password as string,
+              8,
+            );
+
+            const newUser = await db
+              .insert(users)
+              .values({
+                email: credentials.email as string,
+                password: hashedPassword,
+                name: (credentials.email as string).split("@")[0],
+              })
+              .returning();
+            return newUser[0] ?? null;
+          }
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
+      },
+    }),
+  ],
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
