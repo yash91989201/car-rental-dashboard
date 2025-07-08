@@ -1,14 +1,14 @@
 import { getListings } from "@/lib/queries";
-import type { GetListingsInputType } from "@/lib/types";
+import type { GetListingsQueryType } from "@/lib/types";
 import { queryKeys } from "@/lib/utils";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
-export const getListingsQueryOptions = (input: GetListingsInputType) =>
+export const getListingsQueryOptions = (query: GetListingsQueryType) =>
   queryOptions({
-    queryKey: queryKeys.getListings(input),
-    queryFn: () => getListings(input),
+    queryKey: queryKeys.getListings(query),
+    queryFn: () => getListings(query),
   });
 
-export const useGetListings = (input: GetListingsInputType) => {
+export const useGetListings = (input: GetListingsQueryType) => {
   return useQuery(getListingsQueryOptions(input));
 };

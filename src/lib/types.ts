@@ -4,8 +4,10 @@ import type {
   LoginSchema,
   GenerateMockListingsInput,
   GenerateMockListingsOutput,
-  GetListingsInput,
+  GetListingsQuery,
   GetListingsOutput,
+  GetListingOutput,
+  GetListingQuery,
 } from "@/lib/schema";
 import type { z } from "zod/v4";
 
@@ -23,8 +25,11 @@ export type GenerateMockListingsOutputType = z.infer<
   typeof GenerateMockListingsOutput
 >;
 
-export type GetListingsInputType = z.infer<typeof GetListingsInput>;
+export type GetListingsQueryType = z.infer<typeof GetListingsQuery>;
 export type GetListingsOutputType = z.infer<typeof GetListingsOutput>;
+
+export type GetListingQueryType = z.infer<typeof GetListingQuery>;
+export type GetListingOutputType = z.infer<typeof GetListingOutput>;
 
 // auth schema types
 export type LoginSchemaType = z.infer<typeof LoginSchema>;

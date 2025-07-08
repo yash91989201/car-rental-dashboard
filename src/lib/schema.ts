@@ -23,7 +23,7 @@ export const GenerateMockListingsOutput = z.object({
     .optional(),
 });
 
-export const GetListingsInput = z.object({
+export const GetListingsQuery = z.object({
   page: z.number().optional(),
   count: z.number().optional(),
 });
@@ -34,6 +34,20 @@ export const GetListingsOutput = z.object({
   data: z
     .object({
       listings: z.array(ListingSchema),
+    })
+    .optional(),
+});
+
+export const GetListingQuery = z.object({
+  id: z.cuid2(),
+});
+
+export const GetListingOutput = z.object({
+  success: z.boolean(),
+  message: z.string(),
+  data: z
+    .object({
+      listing: ListingSchema,
     })
     .optional(),
 });

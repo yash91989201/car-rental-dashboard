@@ -1,8 +1,10 @@
 import type {
   GenerateMockListingsInputType,
   GenerateMockListingsOutputType,
-  GetListingsInputType,
+  GetListingsQueryType,
   GetListingsOutputType,
+  GetListingOutputType,
+  GetListingQueryType,
 } from "@/lib/types";
 
 export const generateMockListings = async (
@@ -24,15 +26,39 @@ export const generateMockListings = async (
 };
 
 export const getListings = async (
-  input: GetListingsInputType,
+  query: GetListingsQueryType,
 ): Promise<GetListingsOutputType> => {
-  const response = await fetch("/api/listings", {
-    method: "POST",
+  const params = new URLSearchParams();
+
+  if (query.page) {
+    params.append("page", query.page.toString());
+  }
+  if (query.count) {
+    params.append("count", query.count.toString());
+  }
+
+  const response = await fetch(`/api/listings?${params.toString()}`, {
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(input),
   });
 
   return (await response.json()) as GetListingsOutputType;
+};
+
+export const getListing = async (
+  query: GetListingQueryType,
+): Promise<GetListingOutputType> => {
+  const params = new URLSearchParams();
+  params.append("id", query.id);
+
+  const response = await fetch(`/api/listings/${query.id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return (await response.json()) as GetListingOutputType;
 };
