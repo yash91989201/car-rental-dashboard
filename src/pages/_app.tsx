@@ -1,17 +1,23 @@
-import { type AppType } from "next/app";
-import { Geist } from "next/font/google";
-
 import "@/styles/globals.css";
+
+import { Geist } from "next/font/google";
+import { type AppType } from "next/app";
+import { queryClient as initialQueryClient } from "@/lib/query-client";
+import { useState } from "react";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 const geist = Geist({
   subsets: ["latin"],
 });
 
 const MyApp: AppType = ({ Component, pageProps }) => {
+  const [queryClient] = useState(() => initialQueryClient);
   return (
-    <div className={geist.className}>
-      <Component {...pageProps} />
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <div className={geist.className}>
+        <Component {...pageProps} />
+      </div>
+    </QueryClientProvider>
   );
 };
 
