@@ -7,7 +7,7 @@ export default async function handler(
   res: NextApiResponse<GetListingsOutputType>,
 ) {
   try {
-    if (req.method !== "POST") {
+    if (req.method !== "GET") {
       throw new Error(`${req.method} method is not allowed`);
     }
 
@@ -21,6 +21,7 @@ export default async function handler(
       message: "Listings fetched successfully",
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       success: false,
       message:
