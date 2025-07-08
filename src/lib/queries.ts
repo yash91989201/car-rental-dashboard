@@ -37,12 +37,10 @@ export const getListings = async (
     params.append("count", query.count.toString());
   }
 
-  const response = await fetch(`/api/listings?${params.toString()}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const queryString = params.toString();
+  const url = queryString ? `/api/listings?${queryString}` : "/api/listings";
+
+  const response = await fetch(url);
 
   return (await response.json()) as GetListingsOutputType;
 };
@@ -50,15 +48,7 @@ export const getListings = async (
 export const getListing = async (
   query: GetListingQueryType,
 ): Promise<GetListingOutputType> => {
-  const params = new URLSearchParams();
-  params.append("id", query.id);
-
-  const response = await fetch(`/api/listings/${query.id}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const response = await fetch(`/api/listings/${query.id}`);
 
   return (await response.json()) as GetListingOutputType;
 };
