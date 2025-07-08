@@ -12,13 +12,6 @@ import type {
   EditListingQueryType,
   EditListingOutputType,
 } from "@/lib/types";
-import {
-  EditListingOutput,
-  GenerateMockListingsOutput,
-  GetListingOutput,
-  GetListingsOutput,
-  UpdateListingStatusOutput,
-} from "@/lib/schema";
 
 export const generateMockListings = async (
   input: GenerateMockListingsInputType,
@@ -35,7 +28,7 @@ export const generateMockListings = async (
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  return GenerateMockListingsOutput.parse(await response.json());
+  return (await response.json()) as GenerateMockListingsOutputType;
 };
 
 export const getListings = async (
@@ -55,7 +48,7 @@ export const getListings = async (
 
   const response = await fetch(url);
 
-  return GetListingsOutput.parse(await response.json());
+  return (await response.json()) as GenerateMockListingsOutputType;
 };
 
 export const getListing = async (
@@ -63,7 +56,7 @@ export const getListing = async (
 ): Promise<GetListingOutputType> => {
   const response = await fetch(`/api/listings/${query.id}`);
 
-  return GetListingOutput.parse(await response.json());
+  return (await response.json()) as GetListingOutputType;
 };
 
 export const updateListingStatus = async (
@@ -84,7 +77,7 @@ export const updateListingStatus = async (
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  return UpdateListingStatusOutput.parse(await response.json());
+  return (await response.json()) as UpdateListingStatusOutputType;
 };
 
 export const editListing = async (
@@ -105,5 +98,5 @@ export const editListing = async (
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  return EditListingOutput.parse(await response.json());
+  return (await response.json()) as EditListingOutputType;
 };

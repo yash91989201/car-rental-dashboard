@@ -20,9 +20,9 @@ export const useEditListing = () => {
     onError: (error) => {
       toast.error(`Failed to update listing: ${error.message}`);
     },
-    onSettled: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: queryKeys.getListings({}),
+    onSettled: async (_, __, variables) => {
+      await queryClient.refetchQueries({
+        queryKey: queryKeys.getListing({ id: variables.query.id }),
       });
     },
   });

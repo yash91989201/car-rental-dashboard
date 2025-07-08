@@ -5,6 +5,7 @@ import { useUpdateListingStatus } from "@/hooks/use-update-listing-status";
 import { Badge } from "@/components/ui/badge";
 import type { ListingStatusType } from "@/lib/types";
 import { LoaderCircle } from "lucide-react";
+import Link from "next/link";
 
 export default function DashboardPage() {
   const { data, isPending } = useGetListings({});
@@ -84,6 +85,10 @@ export default function DashboardPage() {
                     "Reject"
                   )}
                 </button>
+              </div>
+              <div className="flex gap-3">
+                <Link href={`/dashboard/${listing.id}`}>Review</Link>
+                <Link href={`/dashboard/${listing.id}/edit`}>Edit</Link>
               </div>
             </div>
           ))}
