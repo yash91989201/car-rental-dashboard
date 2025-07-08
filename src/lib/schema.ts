@@ -8,6 +8,7 @@ export const InsertListingSchema = createInsertSchema(listing);
 export const ListingSchema = createSelectSchema(listing).extend({
   status: z.enum(["pending", "approved", "rejected"]),
 });
+export const UpdateListingSchema = createInsertSchema(listing);
 
 // api schema
 export const GenerateMockListingsInput = z.object({
@@ -62,6 +63,26 @@ export const UpdateListingStatusInput = z.object({
 });
 
 export const UpdateListingStatusOutput = z.object({
+  success: z.boolean(),
+  message: z.string(),
+  data: z
+    .object({
+      listing: ListingSchema,
+    })
+    .optional(),
+});
+
+export const EditListingQuery = z.object({
+  id: z.cuid2(),
+});
+
+export const EditListingInput = UpdateListingSchema.pick({
+  carName: true,
+  description: true,
+  owner: true,
+});
+
+export const EditListingOutput = z.object({
   success: z.boolean(),
   message: z.string(),
   data: z

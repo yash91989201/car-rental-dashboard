@@ -11,6 +11,9 @@ import type {
   UpdateListingStatusQuery,
   UpdateListingStatusInput,
   UpdateListingStatusOutput,
+  EditListingInput,
+  EditListingQuery,
+  EditListingOutput,
 } from "@/lib/schema";
 import type { z } from "zod/v4";
 
@@ -43,6 +46,10 @@ export type UpdateListingStatusInputType = z.infer<
 export type UpdateListingStatusOutputType = z.infer<
   typeof UpdateListingStatusOutput
 >;
+
+export type EditListingQueryType = z.infer<typeof EditListingQuery>;
+export type EditListingInputType = z.infer<typeof EditListingInput>;
+export type EditListingOutputType = z.infer<typeof EditListingOutput>;
 
 // auth schema types
 export type LoginSchemaType = z.infer<typeof LoginSchema>;

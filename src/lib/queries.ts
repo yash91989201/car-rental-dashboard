@@ -8,7 +8,17 @@ import type {
   UpdateListingStatusInputType,
   UpdateListingStatusOutputType,
   UpdateListingStatusQueryType,
+  EditListingInputType,
+  EditListingQueryType,
+  EditListingOutputType,
 } from "@/lib/types";
+import {
+  EditListingOutput,
+  GenerateMockListingsOutput,
+  GetListingOutput,
+  GetListingsOutput,
+  UpdateListingStatusOutput,
+} from "@/lib/schema";
 
 export const generateMockListings = async (
   input: GenerateMockListingsInputType,
@@ -25,7 +35,7 @@ export const generateMockListings = async (
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  return (await response.json()) as GenerateMockListingsOutputType;
+  return GenerateMockListingsOutput.parse(await response.json());
 };
 
 export const getListings = async (
@@ -45,7 +55,7 @@ export const getListings = async (
 
   const response = await fetch(url);
 
-  return (await response.json()) as GetListingsOutputType;
+  return GetListingsOutput.parse(await response.json());
 };
 
 export const getListing = async (
@@ -53,7 +63,7 @@ export const getListing = async (
 ): Promise<GetListingOutputType> => {
   const response = await fetch(`/api/listings/${query.id}`);
 
-  return (await response.json()) as GetListingOutputType;
+  return GetListingOutput.parse(await response.json());
 };
 
 export const updateListingStatus = async (
@@ -74,5 +84,26 @@ export const updateListingStatus = async (
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  return (await response.json()) as UpdateListingStatusOutputType;
+  return UpdateListingStatusOutput.parse(await response.json());
+};
+
+export const editListing = async (
+  query: EditListingQueryType,
+  input: EditListingInputType,
+): Promise<EditListingOutputType> => {
+  const url = `/api/listings/${query.id}/edit`;
+
+  const response = await fetch(url, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return EditListingOutput.parse(await response.json());
 };
