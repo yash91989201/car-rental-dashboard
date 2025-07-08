@@ -1,8 +1,20 @@
 import { useMutation } from "@tanstack/react-query";
-import { generateMockListings } from "@/lib/utils";
-import type { ListingType } from "@/lib/types";
+import { generateMockListings } from "@/lib/queries";
+import { queryClient } from "@/lib/query-client";
+import { queryKeys } from "@/lib/utils";
+import { toast } from "sonner";
 
-export const useGenerateMockListings = () =>
-  useMutation<ListingType[], Error, { count: number }>({
+export const useGenerateMockListings = () => {
+  return useMutation({
     mutationFn: generateMockListings,
+    onSuccess: ({ message }) => {
+      toast.success(message);
+    },
+    onError: ({ message }) => {
+      toast.error(message);
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.all() });
+    },
   });
+};

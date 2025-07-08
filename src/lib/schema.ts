@@ -2,15 +2,41 @@ import { z } from "zod/v4";
 import { listing } from "@/server/db/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-export const MockListingReqBodySchema = z.object({
-  count: z.number(),
-});
-
+// db tables schema
+export const InsertListingSchema = createInsertSchema(listing);
 export const ListingSchema = createSelectSchema(listing).extend({
   status: z.enum(["pending", "approved", "rejected"]),
 });
 
-export const InsertListingSchema = createInsertSchema(listing);
+// api schema
+export const GenerateMockListingsInput = z.object({
+  count: z.number(),
+});
+
+export const GenerateMockListingsOutput = z.object({
+  success: z.boolean(),
+  message: z.string(),
+  data: z
+    .object({
+      listings: z.array(ListingSchema),
+    })
+    .optional(),
+});
+
+export const GetListingsInput = z.object({
+  page: z.number().optional(),
+  count: z.number().optional(),
+});
+
+export const GetListingsOutput = z.object({
+  success: z.boolean(),
+  message: z.string(),
+  data: z
+    .object({
+      listings: z.array(ListingSchema),
+    })
+    .optional(),
+});
 
 export const LoginSchema = z.object({
   email: z.email("Invalid email address"),

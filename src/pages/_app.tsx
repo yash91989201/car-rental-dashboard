@@ -5,6 +5,7 @@ import { type AppType } from "next/app";
 import { queryClient as initialQueryClient } from "@/lib/query-client";
 import { useState } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/sonner";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -13,11 +14,14 @@ const geist = Geist({
 const MyApp: AppType = ({ Component, pageProps }) => {
   const [queryClient] = useState(() => initialQueryClient);
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className={geist.className}>
-        <Component {...pageProps} />
-      </div>
-    </QueryClientProvider>
+    <>
+      <QueryClientProvider client={queryClient}>
+        <div className={geist.className}>
+          <Component {...pageProps} />
+        </div>
+      </QueryClientProvider>
+      <Toaster richColors />
+    </>
   );
 };
 

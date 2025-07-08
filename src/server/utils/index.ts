@@ -18,7 +18,7 @@ function getRandomItem<T>(array: T[]): T {
 
 function getRandomDateWithinLast30Days(): Date {
   const now = new Date();
-  const offset = Math.floor(Math.random() * 30); // 0 to 29 days ago
+  const offset = Math.floor(Math.random() * 30);
   const randomDate = new Date(now);
   randomDate.setDate(now.getDate() - offset);
   return randomDate;
