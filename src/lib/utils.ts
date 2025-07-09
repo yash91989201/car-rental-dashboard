@@ -23,3 +23,9 @@ export const queryKeys = {
     { id },
   ],
 };
+
+export const truncateTextWithEllepsis = (str: string, limit = 40) => {
+  if (!str) return "";
+  if (str.length <= limit) return str;
+  return str.slice(0, limit) + "...";
+};

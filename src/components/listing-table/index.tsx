@@ -48,6 +48,7 @@ export const ListingTable = ({ listings }: { listings: ListingType[] }) => {
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
+                className="group"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
