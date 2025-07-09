@@ -5,6 +5,7 @@ import {
   MOCK_CAR_NAMES,
   MOCK_OWNER_NAMES,
 } from "@/constants";
+import type { NextApiRequest } from "next";
 
 const statuses: ListingStatusType[] = ["pending", "approved", "rejected"];
 
@@ -44,4 +45,12 @@ export function generateMockListings(count = 10): ListingType[] {
   }
 
   return listings;
+}
+
+export function enforceHandlerMethod(req: NextApiRequest) {
+  return (method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE") => {
+    if (req.method !== method) {
+      throw new Error(`${req.method} method not allowed`);
+    }
+  };
 }

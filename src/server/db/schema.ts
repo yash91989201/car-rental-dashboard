@@ -30,6 +30,7 @@ export const listing = createTable("listing", (d) => ({
     .integer({ mode: "timestamp" })
     .default(sql`(unixepoch())`)
     .notNull(),
+  deletedAt: d.integer({ mode: "timestamp" }),
 }));
 
 export const auditLog = createTable("audit_log", (d) => ({

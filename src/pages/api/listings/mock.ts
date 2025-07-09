@@ -1,6 +1,6 @@
 import { listing } from "@/server/db/schema";
 import { db } from "@/server/db";
-import { generateMockListings } from "@/server/utils";
+import { enforceHandlerMethod, generateMockListings } from "@/server/utils";
 import { GenerateMockListingsInput } from "@/lib/schema";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { GenerateMockListingsOutputType } from "@/lib/types";
@@ -10,9 +10,7 @@ export default async function handler(
   res: NextApiResponse<GenerateMockListingsOutputType>,
 ) {
   try {
-    if (req.method !== "POST") {
-      throw new Error(`${req.method} not allowed`);
-    }
+    enforceHandlerMethod(req)("POST");
 
     const parsedBody = GenerateMockListingsInput.safeParse(req.body);
     const data = parsedBody.data;

@@ -5,7 +5,8 @@ import {
 import type { UpdateListingStatusOutputType } from "@/lib/types";
 import { db } from "@/server/db";
 import { listing } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
+import { enforceHandlerMethod } from "@/server/utils";
+import { and, eq, isNull } from "drizzle-orm";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -13,9 +14,7 @@ export default async function handler(
   res: NextApiResponse<UpdateListingStatusOutputType>,
 ) {
   try {
-    if (req.method !== "PATCH") {
-      throw new Error(`${req.method} method not allowed`);
-    }
+    enforceHandlerMethod(req)("PATCH");
 
     const query = UpdateListingStatusQuery.parse(req.query);
     const input = UpdateListingStatusInput.parse(req.body);
@@ -25,7 +24,7 @@ export default async function handler(
       .set({
         status: input.status,
       })
-      .where(eq(listing.id, query.id))
+      .where(and(eq(listing.id, query.id), isNull(listing.deletedAt)))
       .returning();
 
     if (!updatedListing) {

@@ -2,7 +2,8 @@ import { EditListingQuery, EditListingInput } from "@/lib/schema";
 import type { EditListingOutputType } from "@/lib/types";
 import { db } from "@/server/db";
 import { listing } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
+import { enforceHandlerMethod } from "@/server/utils";
+import { and, eq, isNull } from "drizzle-orm";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -10,9 +11,7 @@ export default async function handler(
   res: NextApiResponse<EditListingOutputType>,
 ) {
   try {
-    if (req.method !== "PATCH") {
-      throw new Error(`${req.method} method not allowed`);
-    }
+    enforceHandlerMethod(req)("PATCH");
 
     const query = EditListingQuery.parse(req.query);
     const input = EditListingInput.parse(req.body);
@@ -20,7 +19,7 @@ export default async function handler(
     const [updatedListing] = await db
       .update(listing)
       .set(input)
-      .where(eq(listing.id, query.id))
+      .where(and(eq(listing.id, query.id), isNull(listing.deletedAt)))
       .returning();
 
     if (!updatedListing) {
@@ -29,7 +28,7 @@ export default async function handler(
 
     res.status(200).json({
       success: true,
-      message: `Listing for ${updatedListing.carName} updated successfully`,
+      message: `Listing for ${updatedListing.carName} edited successfully`,
       data: {
         listing: updatedListing,
       },

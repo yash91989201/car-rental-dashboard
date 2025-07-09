@@ -1,0 +1,1 @@
+ALTER TABLE `car-rental-dashboard_listing` ADD `deletedAt` integer;

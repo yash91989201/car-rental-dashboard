@@ -2,7 +2,8 @@ import { GetListingsQuery } from "@/lib/schema";
 import type { GetListingsOutputType } from "@/lib/types";
 import { db } from "@/server/db";
 import { listing } from "@/server/db/schema";
-import { asc, countDistinct, desc } from "drizzle-orm";
+import { enforceHandlerMethod } from "@/server/utils";
+import { asc, countDistinct, desc, isNull } from "drizzle-orm";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -10,9 +11,7 @@ export default async function handler(
   res: NextApiResponse<GetListingsOutputType>,
 ) {
   try {
-    if (req.method !== "GET") {
-      throw new Error(`${req.method} method is not allowed`);
-    }
+    enforceHandlerMethod(req)("GET");
 
     const { limit, order, page, sortBy } = GetListingsQuery.parse(req.query);
 
@@ -25,7 +24,8 @@ export default async function handler(
 
     const [listingsCount] = await db
       .select({ count: countDistinct(listing.id) })
-      .from(listing);
+      .from(listing)
+      .where(isNull(listing.deletedAt));
 
     if (!listingsCount) {
       throw new Error("Failed to get total listings count");
@@ -36,12 +36,14 @@ export default async function handler(
     const listings = await db
       .select()
       .from(listing)
+      .where(isNull(listing.deletedAt))
       .orderBy(sortOrder)
       .limit(limit)
       .offset(offset);
 
     res.status(200).json({
       success: true,
+      message: `${listings.length} listings fetched successfully`,
       pagination: {
         page,
         totalPages: Math.ceil(totalListings / limit),
@@ -49,7 +51,6 @@ export default async function handler(
       data: {
         listings,
       },
-      message: "Listings fetched successfully",
     });
   } catch (error) {
     console.log(error);

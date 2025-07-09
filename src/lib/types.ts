@@ -14,6 +14,8 @@ import type {
   EditListingInput,
   EditListingQuery,
   EditListingOutput,
+  DeleteListingOutput,
+  DeleteListingQuery,
 } from "@/lib/schema";
 import type { z } from "zod/v4";
 
@@ -50,6 +52,9 @@ export type UpdateListingStatusOutputType = z.infer<
 export type EditListingQueryType = z.infer<typeof EditListingQuery>;
 export type EditListingInputType = z.infer<typeof EditListingInput>;
 export type EditListingOutputType = z.infer<typeof EditListingOutput>;
+
+export type DeleteListingQueryType = z.infer<typeof DeleteListingQuery>;
+export type DeleteListingOutputType = z.infer<typeof DeleteListingOutput>;
 
 // auth schema types
 export type LoginSchemaType = z.infer<typeof LoginSchema>;

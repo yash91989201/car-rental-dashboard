@@ -11,6 +11,8 @@ import type {
   EditListingInputType,
   EditListingQueryType,
   EditListingOutputType,
+  DeleteListingOutputType,
+  DeleteListingQueryType,
 } from "@/lib/types";
 
 export const generateMockListings = async (
@@ -24,11 +26,13 @@ export const generateMockListings = async (
     body: JSON.stringify(input),
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  const output = (await response.json()) as GenerateMockListingsOutputType;
+
+  if (!output.success) {
+    throw new Error(output.message);
   }
 
-  return (await response.json()) as GenerateMockListingsOutputType;
+  return output;
 };
 
 export const getListings = async (
@@ -48,16 +52,26 @@ export const getListings = async (
   const url = queryString ? `/api/listings?${queryString}` : "/api/listings";
 
   const response = await fetch(url);
+  const output = (await response.json()) as GetListingsOutputType;
 
-  return (await response.json()) as GetListingsOutputType;
+  if (!output.success) {
+    throw new Error(output.message);
+  }
+
+  return output;
 };
 
 export const getListing = async (
   query: GetListingQueryType,
 ): Promise<GetListingOutputType> => {
   const response = await fetch(`/api/listings/${query.id}`);
+  const output = (await response.json()) as GetListingOutputType;
 
-  return (await response.json()) as GetListingOutputType;
+  if (!output.success) {
+    throw new Error(output.message);
+  }
+
+  return output;
 };
 
 export const updateListingStatus = async (
@@ -74,11 +88,13 @@ export const updateListingStatus = async (
     body: JSON.stringify(input),
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  const output = (await response.json()) as UpdateListingStatusOutputType;
+
+  if (!output.success) {
+    throw new Error(output.message);
   }
 
-  return (await response.json()) as UpdateListingStatusOutputType;
+  return output;
 };
 
 export const editListing = async (
@@ -99,5 +115,32 @@ export const editListing = async (
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  return (await response.json()) as EditListingOutputType;
+  const output = (await response.json()) as EditListingOutputType;
+
+  if (!output.success) {
+    throw new Error(output.message);
+  }
+
+  return output;
+};
+
+export const deleteListing = async (
+  query: DeleteListingQueryType,
+): Promise<DeleteListingOutputType> => {
+  const url = `/api/listings/${query.id}/delete`;
+
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const output = (await response.json()) as DeleteListingOutputType;
+
+  if (!output.success) {
+    throw new Error(output.message);
+  }
+
+  return output;
 };

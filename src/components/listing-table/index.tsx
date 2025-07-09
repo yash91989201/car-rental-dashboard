@@ -14,9 +14,11 @@ import {
 } from "@/components/ui/table";
 import type { ListingType } from "@/lib/types";
 import { useUpdateListingStatus } from "@/hooks/use-update-listing-status";
+import { useDeleteListing } from "@/hooks/use-delete-listing";
 
 export const ListingTable = ({ listings }: { listings: ListingType[] }) => {
   const { mutateAsync: updateListingStatus } = useUpdateListingStatus();
+  const { mutateAsync: deleteListing } = useDeleteListing();
 
   const approveListing = (id: string) => {
     void updateListingStatus({
@@ -32,9 +34,17 @@ export const ListingTable = ({ listings }: { listings: ListingType[] }) => {
     });
   };
 
+  const deleteListingAction = (id: string) => {
+    void deleteListing({ id });
+  };
+
   const table = useReactTable({
     data: listings,
-    columns: getColumns({ approveListing, rejectListing }),
+    columns: getColumns({
+      approveListing,
+      rejectListing,
+      deleteListing: deleteListingAction,
+    }),
     getCoreRowModel: getCoreRowModel(),
   });
 
