@@ -49,7 +49,8 @@ export const ListingTable = ({ listings }: { listings: ListingType[] }) => {
   });
 
   return (
-    <>
+    <div>
+      <div className="flex"></div>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -96,6 +97,6 @@ export const ListingTable = ({ listings }: { listings: ListingType[] }) => {
           )}
         </TableBody>
       </Table>
-    </>
+    </div>
   );
 };

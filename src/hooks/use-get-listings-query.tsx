@@ -18,10 +18,26 @@ export function useGetListingsQuery() {
   const currentSortBy = sortBy ?? "createdAt";
   const currentOrder = order ?? "desc";
 
+  const changePage = (newPage: number) => {
+    void router.push({
+      pathname: router.pathname,
+      query: { ...router.query, page: newPage, limit },
+    });
+  };
+
+  const changeLimit = (newLimit: number) => {
+    void router.push({
+      pathname: router.pathname,
+      query: { ...router.query, page: 1, limit: newLimit },
+    });
+  };
+
   return {
     page: currentPage,
     limit: currentLimit,
     sortBy: currentSortBy,
     order: currentOrder,
+    changePage,
+    changeLimit,
   };
 }
