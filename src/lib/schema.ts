@@ -26,13 +26,25 @@ export const GenerateMockListingsOutput = z.object({
 });
 
 export const GetListingsQuery = z.object({
-  page: z.number().optional(),
-  count: z.number().optional(),
+  limit: z.coerce.number().optional().default(10),
+  page: z.coerce.number().optional().default(1),
+  sortBy: z.enum(["createdAt", "updatedAt"]).optional().default("createdAt"),
+  order: z.enum(["asc", "desc"]).optional().default("desc"),
+});
+
+export const PaginationSchema = z.object({
+  page: z.number().min(1).default(1),
+  pageSize: z.number().min(1).default(1),
+  totalPages: z.number().min(1).default(1),
 });
 
 export const GetListingsOutput = z.object({
   success: z.boolean(),
   message: z.string(),
+  pagination: z.object({
+    page: z.number(),
+    totalPages: z.number(),
+  }),
   data: z
     .object({
       listings: z.array(ListingSchema),

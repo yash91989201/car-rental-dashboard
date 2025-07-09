@@ -9,11 +9,13 @@ export function cn(...inputs: ClassValue[]) {
 
 export const queryKeys = {
   all: () => ["listings"],
-  getListings: ({ count, page }: GetListingsQueryType) => [
+  getListings: ({ limit, order, page, sortBy }: GetListingsQueryType) => [
     ...queryKeys.all(),
     "getListings",
-    { count },
+    { limit },
+    { order },
     { page },
+    { sortBy },
   ],
   getListing: ({ id }: GetListingQueryType) => [
     ...queryKeys.all(),

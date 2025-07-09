@@ -39,8 +39,9 @@ export const getListings = async (
   if (query.page) {
     params.append("page", query.page.toString());
   }
-  if (query.count) {
-    params.append("count", query.count.toString());
+
+  if (query.limit) {
+    params.append("limit", query.limit.toString());
   }
 
   const queryString = params.toString();
@@ -48,7 +49,7 @@ export const getListings = async (
 
   const response = await fetch(url);
 
-  return (await response.json()) as GenerateMockListingsOutputType;
+  return (await response.json()) as GetListingsOutputType;
 };
 
 export const getListing = async (

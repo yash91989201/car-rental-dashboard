@@ -27,7 +27,7 @@ export default async function handler(
 
     res.status(201).json({
       success: true,
-      message: "Listings fetched successfully",
+      message: "Mock listings generated successfully",
       data: {
         listings: queryRes,
       },
