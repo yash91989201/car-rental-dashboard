@@ -3,7 +3,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { columns } from "./columns";
+import { getColumns } from "./columns";
 import {
   Table,
   TableHeader,
@@ -13,11 +13,28 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import type { ListingType } from "@/lib/types";
+import { useUpdateListingStatus } from "@/hooks/use-update-listing-status";
 
 export const ListingTable = ({ listings }: { listings: ListingType[] }) => {
+  const { mutateAsync: updateListingStatus } = useUpdateListingStatus();
+
+  const approveListing = (id: string) => {
+    void updateListingStatus({
+      query: { id },
+      input: { status: "approved" },
+    });
+  };
+
+  const rejectListing = (id: string) => {
+    void updateListingStatus({
+      query: { id },
+      input: { status: "rejected" },
+    });
+  };
+
   const table = useReactTable({
     data: listings,
-    columns,
+    columns: getColumns({ approveListing, rejectListing }),
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -59,7 +76,10 @@ export const ListingTable = ({ listings }: { listings: ListingType[] }) => {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell
+                colSpan={getColumns.length}
+                className="h-24 text-center"
+              >
                 No results.
               </TableCell>
             </TableRow>

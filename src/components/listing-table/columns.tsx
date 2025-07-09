@@ -7,7 +7,15 @@ import { truncateTextWithEllepsis } from "@/lib/utils";
 import { Eye, SquarePen } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
-export const columns: ColumnDef<ListingType>[] = [
+type ColumnProps = {
+  approveListing: (id: string) => void;
+  rejectListing: (id: string) => void;
+};
+
+export const getColumns = ({
+  approveListing: acceptListing,
+  rejectListing,
+}: ColumnProps): ColumnDef<ListingType>[] => [
   {
     accessorKey: "id",
     header: "ID",
@@ -95,12 +103,14 @@ export const columns: ColumnDef<ListingType>[] = [
           <Button
             size="sm"
             className="border-green-300 bg-green-100 text-green-800 hover:bg-green-200"
+            onClick={() => acceptListing(row.original.id)}
           >
             Accept
           </Button>
           <Button
             size="sm"
             className="border-red-300 bg-red-100 text-red-800 hover:bg-red-200"
+            onClick={() => rejectListing(row.original.id)}
           >
             Reject
           </Button>

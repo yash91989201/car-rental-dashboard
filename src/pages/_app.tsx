@@ -13,6 +13,7 @@ const geist = Geist({
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   const [queryClient] = useState(() => initialQueryClient);
+
   return (
     <>
       <QueryClientProvider client={queryClient}>

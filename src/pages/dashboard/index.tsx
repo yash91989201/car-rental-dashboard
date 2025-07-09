@@ -3,8 +3,6 @@ import { useGenerateMockListings } from "@/hooks/use-generate-mock-listings";
 import { useGetListings } from "@/hooks/use-get-listings";
 import { ListingTable } from "@/components/listing-table";
 import { ListingTableSkeleton } from "@/components/listing-table/listing-table-skeleton";
-import { useRouter } from "next/router";
-import type { ParsedUrlQuery } from "querystring";
 import { ChevronDown } from "lucide-react";
 
 import {
@@ -22,24 +20,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-
-interface DashboardQuery extends ParsedUrlQuery {
-  page?: string;
-  limit?: string;
-}
+import { useGetListingsQuery } from "@/hooks/use-get-listings-query";
+import { useRouter } from "next/router";
 
 export default function DashboardPage() {
   const router = useRouter();
-
-  const { page, limit } = router.query as DashboardQuery;
-  const currentPage = Number(page) || 1;
-  const currentLimit = Number(limit) || 10;
+  const { page, limit, sortBy, order } = useGetListingsQuery();
 
   const { data, isPending } = useGetListings({
-    page: currentPage,
-    limit: currentLimit,
-    sortBy: "createdAt",
-    order: "desc",
+    page,
+    limit,
+    sortBy,
+    order,
   });
 
   const { mutate: generateMockListings, isPending: isGeneratingMockListings } =
@@ -50,7 +42,7 @@ export default function DashboardPage() {
   const handlePageChange = (newPage: number) => {
     void router.push({
       pathname: router.pathname,
-      query: { ...router.query, page: newPage, limit: currentLimit },
+      query: { ...router.query, page: newPage, limit },
     });
   };
 
@@ -78,8 +70,7 @@ export default function DashboardPage() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
-                Page Size: {currentLimit}{" "}
-                <ChevronDown className="ml-2 h-4 w-4" />
+                Page Size: {limit} <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -97,7 +88,7 @@ export default function DashboardPage() {
       </div>
 
       {isPending ? (
-        <ListingTableSkeleton rows={currentLimit} />
+        <ListingTableSkeleton rows={limit} />
       ) : (
         <>
           <ListingTable listings={data?.data?.listings ?? []} />
@@ -106,11 +97,9 @@ export default function DashboardPage() {
               <PaginationItem>
                 <PaginationPrevious
                   href="#"
-                  onClick={() => handlePageChange(currentPage - 1)}
+                  onClick={() => handlePageChange(page - 1)}
                   className={
-                    currentPage === 1
-                      ? "pointer-events-none opacity-50"
-                      : undefined
+                    page === 1 ? "pointer-events-none opacity-50" : undefined
                   }
                 />
               </PaginationItem>
@@ -119,7 +108,7 @@ export default function DashboardPage() {
                   <PaginationLink
                     href="#"
                     onClick={() => handlePageChange(i + 1)}
-                    isActive={currentPage === i + 1}
+                    isActive={page === i + 1}
                   >
                     {i + 1}
                   </PaginationLink>
@@ -128,9 +117,9 @@ export default function DashboardPage() {
               <PaginationItem>
                 <PaginationNext
                   href="#"
-                  onClick={() => handlePageChange(currentPage + 1)}
+                  onClick={() => handlePageChange(page + 1)}
                   className={
-                    currentPage === totalPages
+                    page === totalPages
                       ? "pointer-events-none opacity-50"
                       : undefined
                   }

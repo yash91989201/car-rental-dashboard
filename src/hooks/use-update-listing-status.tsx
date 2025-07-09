@@ -6,9 +6,11 @@ import type {
 } from "@/lib/types";
 import { toast } from "sonner";
 import { queryKeys } from "@/lib/utils";
+import { useGetListingsQuery } from "@/hooks/use-get-listings-query";
 
 export function useUpdateListingStatus() {
   const queryClient = useQueryClient();
+  const listingsQuery = useGetListingsQuery();
 
   return useMutation({
     mutationFn: ({
@@ -26,7 +28,7 @@ export function useUpdateListingStatus() {
     },
     onSettled: async () => {
       await queryClient.invalidateQueries({
-        queryKey: queryKeys.getListings({}),
+        queryKey: queryKeys.getListings(listingsQuery),
       });
     },
   });
