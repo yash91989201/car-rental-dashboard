@@ -5,6 +5,7 @@ import { Button, buttonVariants } from "../ui/button";
 import Link from "next/link";
 import { cn, truncateTextWithEllepsis } from "@/lib/utils";
 import { Eye, SquarePen, Trash2 } from "lucide-react";
+import { CopyButton } from "@/components/copy-button";
 
 type ColumnProps = {
   approveListing: (id: string) => void;
@@ -17,10 +18,6 @@ export const getColumns = ({
   rejectListing,
   deleteListing,
 }: ColumnProps): ColumnDef<ListingType>[] => [
-  {
-    accessorKey: "id",
-    header: "ID",
-  },
   {
     accessorKey: "carName",
     header: "Car Name",
@@ -105,6 +102,7 @@ export const getColumns = ({
     cell: ({ row }) => {
       return (
         <div className="invisible flex items-center gap-3 group-hover:visible">
+          <CopyButton textToCopy={row.original.id} />
           <Link
             className={cn(
               buttonVariants({
