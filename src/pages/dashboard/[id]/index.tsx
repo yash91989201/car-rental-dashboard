@@ -8,7 +8,7 @@ export default function ListingPage() {
   const router = useRouter();
 
   const { id } = router.query;
-  const listingId = id ? (Array.isArray(id) ? id[0] : id) : undefined;
+  const listingId = Array.isArray(id) ? id[0] : id;
 
   const { data, isPending } = useQuery({
     ...getListingQueryOptions({ id: listingId! }),
