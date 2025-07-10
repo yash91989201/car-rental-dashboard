@@ -1,8 +1,12 @@
 import { EditListingQuery, EditListingInput } from "@/lib/schema";
 import type { EditListingOutputType } from "@/lib/types";
 import { db } from "@/server/db";
-import { listing } from "@/server/db/schema";
-import { enforceHandlerMethod } from "@/server/utils";
+import { auditLog, listing } from "@/server/db/schema";
+import {
+  enforceHandlerMethod,
+  enforceHandlerSession,
+  handleApiError,
+} from "@/server/utils";
 import { and, eq, isNull } from "drizzle-orm";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -11,6 +15,7 @@ export default async function handler(
   res: NextApiResponse<EditListingOutputType>,
 ) {
   try {
+    const session = await enforceHandlerSession(req, res);
     enforceHandlerMethod(req)("PATCH");
 
     const query = EditListingQuery.parse(req.query);
@@ -26,6 +31,12 @@ export default async function handler(
       throw new Error("Listing not found");
     }
 
+    await db.insert(auditLog).values({
+      action: "edit",
+      adminId: session.user.id,
+      listingId: updatedListing.id,
+    });
+
     res.status(200).json({
       success: true,
       message: `Listing for ${updatedListing.carName} edited successfully`,
@@ -34,10 +45,8 @@ export default async function handler(
       },
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Internal Error Occurred",
-    });
+    console.error("Error on /api/listings/[id]/edit : ", error);
+
+    handleApiError(res, error);
   }
 }

@@ -15,6 +15,26 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useGetListingsQuery } from "@/hooks/use-get-listings-query";
 import { TablePagination } from "@/components/listing-table/pagination";
 import { LoaderCircle } from "lucide-react";
+import type { GetServerSideProps } from "next";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]";
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (session == null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};
 
 export default function DashboardPage() {
   const {

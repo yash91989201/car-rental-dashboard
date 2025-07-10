@@ -4,8 +4,12 @@ import {
 } from "@/lib/schema";
 import type { UpdateListingStatusOutputType } from "@/lib/types";
 import { db } from "@/server/db";
-import { listing } from "@/server/db/schema";
-import { enforceHandlerMethod } from "@/server/utils";
+import { auditLog, listing } from "@/server/db/schema";
+import {
+  enforceHandlerMethod,
+  enforceHandlerSession,
+  handleApiError,
+} from "@/server/utils";
 import { and, eq, isNull } from "drizzle-orm";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -14,6 +18,7 @@ export default async function handler(
   res: NextApiResponse<UpdateListingStatusOutputType>,
 ) {
   try {
+    const session = await enforceHandlerSession(req, res);
     enforceHandlerMethod(req)("PATCH");
 
     const query = UpdateListingStatusQuery.parse(req.query);
@@ -31,6 +36,12 @@ export default async function handler(
       throw new Error("Listing not found");
     }
 
+    await db.insert(auditLog).values({
+      action: "delete",
+      adminId: session.user.id,
+      listingId: query.id,
+    });
+
     res.status(200).json({
       success: true,
       message: `${updatedListing.status} listing for ${updatedListing.carName}`,
@@ -39,10 +50,8 @@ export default async function handler(
       },
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Internal Error Occurred",
-    });
+    console.error("Error in /api/listings/[id]/update-status :", error);
+
+    handleApiError(res, error);
   }
 }

@@ -29,7 +29,7 @@ export default function LoginPage() {
         email: data.email,
         password: data.password,
         redirect: true,
-        callbackUrl: "/",
+        callbackUrl: "/dashboard",
       });
     } catch (error) {
       console.error("Login error:", error);

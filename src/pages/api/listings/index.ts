@@ -2,7 +2,11 @@ import { GetListingsQuery } from "@/lib/schema";
 import type { GetListingsOutputType } from "@/lib/types";
 import { db } from "@/server/db";
 import { listing } from "@/server/db/schema";
-import { enforceHandlerMethod } from "@/server/utils";
+import {
+  enforceHandlerMethod,
+  enforceHandlerSession,
+  handleApiError,
+} from "@/server/utils";
 import { asc, countDistinct, desc, isNull } from "drizzle-orm";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -11,6 +15,7 @@ export default async function handler(
   res: NextApiResponse<GetListingsOutputType>,
 ) {
   try {
+    await enforceHandlerSession(req, res);
     enforceHandlerMethod(req)("GET");
 
     const { limit, order, page, sortBy } = GetListingsQuery.parse(req.query);
@@ -65,19 +70,17 @@ export default async function handler(
         totalPages: Math.ceil(totalListings / limit),
       },
       data: {
-        listings,
+        listings: listings.map((listing) => ({
+          ...listing,
+          createdAt: listing.createdAt.toISOString(),
+          updatedAt: listing.updatedAt.toISOString(),
+          deletedAt: listing?.deletedAt?.toISOString() ?? null,
+        })),
       },
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Unexpected error occurred",
-      pagination: {
-        page: 1,
-        totalPages: 1,
-      },
-    });
+    console.error("Error on /api/listings : ", error);
+
+    handleApiError(res, error);
   }
 }

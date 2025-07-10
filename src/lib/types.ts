@@ -16,8 +16,10 @@ import type {
   EditListingOutput,
   DeleteListingOutput,
   DeleteListingQuery,
+  GetListingLogQuery,
+  GetListingLogOutput,
 } from "@/lib/schema";
-import type { z } from "zod/v4";
+import type z from "zod";
 
 // db table types
 export type ListingType = z.infer<typeof ListingSchema>;
@@ -56,5 +58,9 @@ export type EditListingOutputType = z.infer<typeof EditListingOutput>;
 export type DeleteListingQueryType = z.infer<typeof DeleteListingQuery>;
 export type DeleteListingOutputType = z.infer<typeof DeleteListingOutput>;
 
+export type AuditLogActions = "approve" | "reject" | "edit" | "delete";
+
+export type GetListingLogQueryType = z.infer<typeof GetListingLogQuery>;
+export type GetListingLogOutputType = z.infer<typeof GetListingLogOutput>;
 // auth schema types
 export type LoginSchemaType = z.infer<typeof LoginSchema>;

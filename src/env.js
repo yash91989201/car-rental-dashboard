@@ -1,5 +1,5 @@
 import { createEnv } from "@t3-oss/env-nextjs";
-import { z } from "zod/v4";
+import z from "zod";
 
 export const env = createEnv({
   server: {
@@ -8,11 +8,11 @@ export const env = createEnv({
       .default("development"),
     DATABASE_URL: z.url(),
     DATABASE_AUTH_TOKEN: z.string(),
-    AUTH_SECRET: z.string(),
+    NEXTAUTH_SECRET: z.string(),
   },
   client: {},
   runtimeEnv: {
-    AUTH_SECRET: process.env.AUTH_SECRET,
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
     DATABASE_AUTH_TOKEN: process.env.DATABASE_AUTH_TOKEN,
     NODE_ENV: process.env.NODE_ENV,

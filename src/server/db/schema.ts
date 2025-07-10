@@ -2,7 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import { index, primaryKey, sqliteTableCreator } from "drizzle-orm/sqlite-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 import { createId } from "@paralleldrive/cuid2";
-import type { ListingStatusType } from "@/lib/types";
+import type { AuditLogActions, ListingStatusType } from "@/lib/types";
 
 export const createTable = sqliteTableCreator(
   (name) => `car-rental-dashboard_${name}`,
@@ -33,12 +33,17 @@ export const listing = createTable("listing", (d) => ({
   deletedAt: d.integer({ mode: "timestamp" }),
 }));
 
+export const listingRelations = relations(listing, ({ many }) => ({
+  auditLogs: many(auditLog),
+}));
+
 export const auditLog = createTable("audit_log", (d) => ({
   id: d
     .text({ length: 255 })
     .notNull()
     .primaryKey()
     .$defaultFn(() => createId()),
+  action: d.text({ length: 255 }).notNull().$type<AuditLogActions>(),
   adminId: d
     .text({ length: 255 })
     .notNull()

@@ -1,6 +1,11 @@
 import { listing } from "@/server/db/schema";
 import { db } from "@/server/db";
-import { enforceHandlerMethod, generateMockListings } from "@/server/utils";
+import {
+  enforceHandlerMethod,
+  enforceHandlerSession,
+  generateMockListings,
+  handleApiError,
+} from "@/server/utils";
 import { GenerateMockListingsInput } from "@/lib/schema";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { GenerateMockListingsOutputType } from "@/lib/types";
@@ -10,6 +15,7 @@ export default async function handler(
   res: NextApiResponse<GenerateMockListingsOutputType>,
 ) {
   try {
+    await enforceHandlerSession(req, res);
     enforceHandlerMethod(req)("POST");
 
     const parsedBody = GenerateMockListingsInput.safeParse(req.body);
@@ -31,10 +37,8 @@ export default async function handler(
       },
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Unexpected error occurred",
-    });
+    console.error("Error on /api/listings/mock : ", error);
+
+    handleApiError(res, error);
   }
 }

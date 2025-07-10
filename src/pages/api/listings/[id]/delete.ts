@@ -3,14 +3,19 @@ import { db } from "@/server/db";
 import { DeleteListingQuery } from "@/lib/schema";
 import type { DeleteListingOutputType } from "@/lib/types";
 import { and, eq, isNull } from "drizzle-orm";
-import { listing } from "@/server/db/schema";
-import { enforceHandlerMethod } from "@/server/utils";
+import { auditLog, listing } from "@/server/db/schema";
+import {
+  enforceHandlerMethod,
+  enforceHandlerSession,
+  handleApiError,
+} from "@/server/utils";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<DeleteListingOutputType>,
 ) {
   try {
+    const session = await enforceHandlerSession(req, res);
     enforceHandlerMethod(req)("DELETE");
 
     const query = DeleteListingQuery.parse(req.query);
@@ -27,6 +32,12 @@ export default async function handler(
       throw new Error("Listing not found or already deleted");
     }
 
+    await db.insert(auditLog).values({
+      action: "delete",
+      adminId: session.user.id,
+      listingId: query.id,
+    });
+
     res.status(200).json({
       success: true,
       message: `Listing for ${deletedListing.carName} is deleted`,
@@ -35,11 +46,8 @@ export default async function handler(
       },
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error on /api/listings/[id]/delete : ", error);
 
-    res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Internal Server Error",
-    });
+    handleApiError(res, error);
   }
 }

@@ -2,7 +2,11 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "@/server/db";
 import { GetListingQuery } from "@/lib/schema";
 import type { GetListingOutputType } from "@/lib/types";
-import { enforceHandlerMethod } from "@/server/utils";
+import {
+  enforceHandlerMethod,
+  enforceHandlerSession,
+  handleApiError,
+} from "@/server/utils";
 import { and, eq, isNull } from "drizzle-orm";
 import { listing } from "@/server/db/schema";
 
@@ -11,6 +15,7 @@ export default async function handler(
   res: NextApiResponse<GetListingOutputType>,
 ) {
   try {
+    await enforceHandlerSession(req, res);
     enforceHandlerMethod(req)("GET");
 
     const queries = GetListingQuery.parse(req.query);
@@ -31,11 +36,8 @@ export default async function handler(
       },
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error on /api/listings/[id] : ", error);
 
-    res.status(500).json({
-      success: false,
-      message: error instanceof Error ? error.message : "Internal Server Error",
-    });
+    handleApiError(res, error);
   }
 }

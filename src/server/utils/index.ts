@@ -5,7 +5,10 @@ import {
   MOCK_CAR_NAMES,
   MOCK_OWNER_NAMES,
 } from "@/constants";
-import type { NextApiRequest } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { UnauthorizedError } from "./unauthorized-error";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 const statuses: ListingStatusType[] = ["pending", "approved", "rejected"];
 
@@ -39,13 +42,27 @@ export function generateMockListings(count = 10): ListingType[] {
       description: getRandomItem(MOCK_CAR_DESCRIPTIONS),
       owner: getRandomItem(MOCK_OWNER_NAMES),
       status: getRandomItem(statuses),
-      createdAt,
-      updatedAt,
+      createdAt: createdAt.toISOString(),
+      updatedAt: updatedAt.toISOString(),
+      deletedAt: null,
     });
   }
 
   return listings;
 }
+
+export const enforceHandlerSession = async (
+  req: NextApiRequest,
+  res: NextApiResponse,
+) => {
+  const session = await getServerSession(req, res, authOptions);
+
+  if (session === null) {
+    throw new UnauthorizedError();
+  }
+
+  return session;
+};
 
 export function enforceHandlerMethod(req: NextApiRequest) {
   return (method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE") => {
@@ -53,4 +70,23 @@ export function enforceHandlerMethod(req: NextApiRequest) {
       throw new Error(`${req.method} method not allowed`);
     }
   };
+}
+
+export function handleApiError(res: NextApiResponse, error: unknown) {
+  if (error instanceof Error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  } else if (error instanceof UnauthorizedError) {
+    res.status(401).json({
+      success: false,
+      message: "Unauthorized, please login before performing this action",
+    });
+  } else {
+    res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred",
+    });
+  }
 }

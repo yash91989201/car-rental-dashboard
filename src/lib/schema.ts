@@ -1,5 +1,5 @@
-import { z } from "zod/v4";
-import { listing } from "@/server/db/schema";
+import z from "zod";
+import { auditLog, listing } from "@/server/db/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import type { ListingStatusType } from "./types";
 
@@ -7,8 +7,13 @@ import type { ListingStatusType } from "./types";
 export const InsertListingSchema = createInsertSchema(listing);
 export const ListingSchema = createSelectSchema(listing).extend({
   status: z.enum(["pending", "approved", "rejected"]),
+  createdAt: z.coerce.string(),
+  updatedAt: z.coerce.string(),
+  deletedAt: z.coerce.string().nullable(),
 });
 export const UpdateListingSchema = createInsertSchema(listing);
+
+export const AuditLogSchema = createSelectSchema(auditLog);
 
 // api schema
 export const GenerateMockListingsInput = z.object({
@@ -117,6 +122,20 @@ export const DeleteListingOutput = z.object({
   data: z
     .object({
       listing: ListingSchema,
+    })
+    .optional(),
+});
+
+export const GetListingLogQuery = z.object({
+  id: z.cuid2(),
+});
+
+export const GetListingLogOutput = z.object({
+  success: z.boolean(),
+  message: z.string(),
+  data: z
+    .object({
+      logs: z.array(AuditLogSchema),
     })
     .optional(),
 });

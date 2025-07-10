@@ -1,0 +1,1 @@
+ALTER TABLE `car-rental-dashboard_audit_log` ADD `action` text(255) NOT NULL;

@@ -1,33 +1,31 @@
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { type DefaultSession, type NextAuthConfig } from "next-auth";
-import bcrypt from "bcrypt";
-import { eq } from "drizzle-orm";
-import Credentials from "next-auth/providers/credentials";
-
+import type { DefaultSession } from "next-auth";
 import { db } from "@/server/db";
+import bcrypt from "bcrypt";
 import {
   accounts,
   sessions,
   users,
   verificationTokens,
 } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import type { AuthOptions } from "next-auth";
+import { getUserById } from "@/server/utils/user";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      // ...other properties
-      // role: UserRole;
     } & DefaultSession["user"];
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
 }
 
-export const authConfig = {
+export const authOptions = {
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     Credentials({
       credentials: {
@@ -36,12 +34,14 @@ export const authConfig = {
       },
       authorize: async (credentials) => {
         try {
-          if (!credentials.email || !credentials.password) {
+          const email = credentials?.email;
+          const password = credentials?.password;
+          if (!email || !password) {
             return null;
           }
 
           const user = await db.query.users.findFirst({
-            where: eq(users.email, credentials.email as string),
+            where: eq(users.email, email),
           });
 
           if (user) {
@@ -50,7 +50,7 @@ export const authConfig = {
             }
 
             const isPasswordValid = await bcrypt.compare(
-              credentials.password as string,
+              password,
               user.password,
             );
 
@@ -60,23 +60,22 @@ export const authConfig = {
 
             return user;
           } else {
-            const hashedPassword = await bcrypt.hash(
-              credentials.password as string,
-              8,
-            );
+            const hashedPassword = await bcrypt.hash(password, 8);
 
             const newUser = await db
               .insert(users)
               .values({
-                email: credentials.email as string,
+                email,
                 password: hashedPassword,
-                name: (credentials.email as string).split("@")[0],
+                name: email.split("@")[0],
               })
               .returning();
+
             return newUser[0] ?? null;
           }
         } catch (error) {
           console.log(error);
+
           return null;
         }
       },
@@ -89,12 +88,30 @@ export const authConfig = {
     verificationTokensTable: verificationTokens,
   }),
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    async jwt({ token }) {
+      if (!token.sub) return token;
+
+      const existingUser = await getUserById(token.sub);
+      if (!existingUser) return token;
+
+      const newToken = {
+        ...token,
+        ...existingUser,
+      };
+
+      return newToken;
+    },
+
+    async session({ session, token }) {
+      if (token.sub && session.user) session.user.id = token.sub;
+
+      if (token.role && session.user) {
+        session.user.id = token.id as string;
+      }
+
+      return session;
+    },
   },
-} satisfies NextAuthConfig;
+} satisfies AuthOptions;
+
+export default NextAuth(authOptions);
