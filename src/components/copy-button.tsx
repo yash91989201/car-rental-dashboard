@@ -16,7 +16,9 @@ export const CopyButton = ({ textToCopy, className }: CopyButtonProps) => {
 
   const handleCopy = () => {
     void navigator.clipboard.writeText(textToCopy);
+
     setCopied(true);
+
     setTimeout(() => setCopied(false), 1000);
   };
 
