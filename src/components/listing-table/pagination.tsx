@@ -75,7 +75,7 @@ export const TablePagination = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {[5, 10, 20, 30, 50].map((size) => (
+            {[10, 20, 30, 40, 50].map((size) => (
               <DropdownMenuItem key={size} onClick={() => changeLimit(size)}>
                 {size}
               </DropdownMenuItem>

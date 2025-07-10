@@ -28,7 +28,10 @@ export const GenerateMockListingsOutput = z.object({
 export const GetListingsQuery = z.object({
   limit: z.coerce.number().optional().default(10),
   page: z.coerce.number().optional().default(1),
-  sortBy: z.enum(["createdAt", "updatedAt"]).optional().default("createdAt"),
+  sortBy: z
+    .enum(["createdAt", "updatedAt", "carName", "owner", "status"])
+    .default("createdAt")
+    .optional(),
   order: z.enum(["asc", "desc"]).optional().default("desc"),
 });
 

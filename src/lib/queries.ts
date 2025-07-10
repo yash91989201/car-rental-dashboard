@@ -40,13 +40,14 @@ export const getListings = async (
 ): Promise<GetListingsOutputType> => {
   const params = new URLSearchParams();
 
-  if (query.page) {
-    params.append("page", query.page.toString());
-  }
+  Object.keys(query).forEach((key) => {
+    const value = query[key as keyof GetListingsQueryType];
+    if (value !== undefined) {
+      if (typeof value === "string" && value.length === 0) return;
 
-  if (query.limit) {
-    params.append("limit", query.limit.toString());
-  }
+      params.append(key, String(value));
+    }
+  });
 
   const queryString = params.toString();
   const url = queryString ? `/api/listings?${queryString}` : "/api/listings";

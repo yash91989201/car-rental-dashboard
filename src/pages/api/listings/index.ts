@@ -17,8 +17,24 @@ export default async function handler(
 
     const offset = (page - 1) * limit;
 
-    const sortByColumn =
-      sortBy === "createdAt" ? listing.createdAt : listing.updatedAt;
+    let sortByColumn;
+
+    switch (sortBy) {
+      case "carName":
+        sortByColumn = listing.carName;
+        break;
+      case "owner":
+        sortByColumn = listing.owner;
+        break;
+      case "status":
+        sortByColumn = listing.status;
+        break;
+      case "updatedAt":
+        sortByColumn = listing.updatedAt;
+        break;
+      default:
+        sortByColumn = listing.createdAt;
+    }
 
     const sortOrder = order === "asc" ? asc(sortByColumn) : desc(sortByColumn);
 

@@ -32,6 +32,20 @@ export function useGetListingsQuery() {
     });
   };
 
+  const changeSortBy = (newSortBy: GetListingsQueryType["sortBy"]) => {
+    void router.push({
+      pathname: router.pathname,
+      query: { ...router.query, sortBy: newSortBy, page: 1 },
+    });
+  };
+
+  const changeOrder = (newOrder: GetListingsQueryType["order"]) => {
+    void router.push({
+      pathname: router.pathname,
+      query: { ...router.query, order: newOrder, page: 1 },
+    });
+  };
+
   return {
     page: currentPage,
     limit: currentLimit,
@@ -39,5 +53,7 @@ export function useGetListingsQuery() {
     order: currentOrder,
     changePage,
     changeLimit,
+    changeSortBy,
+    changeOrder,
   };
 }

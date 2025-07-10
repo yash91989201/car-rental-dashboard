@@ -32,10 +32,6 @@ export const getColumns = ({
     ),
   },
   {
-    accessorKey: "owner",
-    header: "Description",
-  },
-  {
     accessorKey: "status",
     header: "Listing Status",
     cell: ({ row }) => {
@@ -64,22 +60,26 @@ export const getColumns = ({
   {
     accessorKey: "createdAt",
     header: "Submitted At",
-    cell: ({ row }) => new Date(row.original.createdAt).toLocaleString(),
+    cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString(),
   },
   {
     accessorKey: "updatedAt",
     header: "Last Updated At",
-    cell: ({ row }) => new Date(row.original.updatedAt).toLocaleString(),
+    cell: ({ row }) => new Date(row.original.updatedAt).toLocaleDateString(),
   },
   {
     accessorKey: "editStatus",
-    header: "",
+    header: "Update Status",
     cell: ({ row }) => {
       return (
-        <div className="invisible flex items-center gap-3 group-hover:visible">
+        <div className="flex items-center gap-3">
           <Button
             size="sm"
             className="border-green-300 bg-green-100 text-green-800 hover:bg-green-200"
+            disabled={
+              row.original.status !== "rejected" &&
+              row.original.status !== "pending"
+            }
             onClick={() => approveListing(row.original.id)}
           >
             Approve
@@ -87,6 +87,10 @@ export const getColumns = ({
           <Button
             size="sm"
             className="border-red-300 bg-red-100 text-red-800 hover:bg-red-200"
+            disabled={
+              row.original.status !== "approved" &&
+              row.original.status !== "pending"
+            }
             onClick={() => rejectListing(row.original.id)}
           >
             Reject
