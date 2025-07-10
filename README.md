@@ -5,6 +5,7 @@
 This project is an internal admin dashboard for reviewing, approving, rejecting, and editing car rental listings submitted by users. It was built as part of a technical assessment to demonstrate proficiency with Next.js, React, API integration, and clean UI/UX practices.
 
 ## 🎥 Demo Video
+file:///home/yash/Videos/Screencasts/demo-video.webm
 
 ## Features
 
