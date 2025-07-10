@@ -50,11 +50,11 @@ export const auditLog = createTable("audit_log", (d) => ({
   adminId: d
     .text({ length: 255 })
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   listingId: d
     .text({ length: 255 })
     .notNull()
-    .references(() => listing.id),
+    .references(() => listing.id, { onDelete: "cascade" }),
   createdAt: d
     .integer({ mode: "timestamp" })
     .$type<string>()
