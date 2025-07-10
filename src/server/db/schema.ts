@@ -25,12 +25,10 @@ export const listing = createTable("listing", (d) => ({
     .notNull(),
   createdAt: d
     .integer({ mode: "timestamp" })
-    .$type<string>()
     .default(sql`(unixepoch())`)
     .notNull(),
   updatedAt: d
     .integer({ mode: "timestamp" })
-    .$type<string>()
     .default(sql`(unixepoch())`)
     .notNull(),
   deletedAt: d.integer({ mode: "timestamp" }),
@@ -57,7 +55,6 @@ export const auditLog = createTable("audit_log", (d) => ({
     .references(() => listing.id, { onDelete: "cascade" }),
   createdAt: d
     .integer({ mode: "timestamp" })
-    .$type<string>()
     .notNull()
     .default(sql`(unixepoch())`),
 }));

@@ -111,11 +111,11 @@ export default function ListingPage() {
           </div>
           <div>
             <span className="font-medium text-gray-800">Created At: </span>
-            <span>{new Date(listing.createdAt).toLocaleString()}</span>
+            <span>{listing.createdAt.toLocaleString()}</span>
           </div>
           <div>
             <span className="font-medium text-gray-800">Last Updated: </span>
-            <span>{new Date(listing.updatedAt).toLocaleString()}</span>
+            <span>{listing.updatedAt.toLocaleString()}</span>
           </div>
         </div>
       </div>

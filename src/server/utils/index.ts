@@ -45,8 +45,8 @@ export function generateMockListings(count = 10): ListingType[] {
       description: getRandomItem(MOCK_CAR_DESCRIPTIONS),
       owner: getRandomItem(MOCK_OWNER_NAMES),
       status: getRandomItem(statuses),
-      createdAt: createdAt.toISOString(),
-      updatedAt: updatedAt.toISOString(),
+      createdAt,
+      updatedAt,
       deletedAt: null,
     });
   }
@@ -77,6 +77,7 @@ export function enforceHandlerMethod(req: NextApiRequest) {
 
 export function handleApiError(res: NextApiResponse, error: unknown) {
   if (error instanceof Error) {
+    console.log(error.message);
     res.status(400).json({
       success: false,
       message: error.message,

@@ -22,22 +22,17 @@ export default async function handler(
     await enforceHandlerSession(req, res);
     enforceHandlerMethod(req)("POST");
 
-    const parsedBody = GenerateMockListingsInput.safeParse(req.body);
-    const data = parsedBody.data;
+    const { count } = GenerateMockListingsInput.parse(req.body);
 
-    if (!parsedBody.success || !data) {
-      throw new Error("count is required in req body");
-    }
+    const mockListings = generateMockListings(count);
 
-    const mockListings = generateMockListings(data.count);
-
-    const queryRes = await db.insert(listing).values(mockListings).returning();
+    const listings = await db.insert(listing).values(mockListings).returning();
 
     res.status(201).json({
       success: true,
       message: "Mock listings generated successfully",
       data: {
-        listings: queryRes,
+        listings,
       },
     });
   } catch (error) {
