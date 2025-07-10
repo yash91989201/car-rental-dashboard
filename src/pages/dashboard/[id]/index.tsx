@@ -1,8 +1,11 @@
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import { getServerSession } from "next-auth";
+import { useQuery } from "@tanstack/react-query";
+import type { GetServerSideProps } from "next";
 // UTILS
 import { cn, getBadgeColor } from "@/lib/utils";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 // CUSTOM HOOKS
 import { useDeleteListing } from "@/hooks/use-delete-listing";
 import { getListingQueryOptions } from "@/hooks/use-get-listing";
@@ -20,6 +23,23 @@ import type { ParsedUrlQuery } from "querystring";
 interface ListingPageQuery extends ParsedUrlQuery {
   id: string;
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (session == null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};
 
 export default function ListingPage() {
   const router = useRouter();

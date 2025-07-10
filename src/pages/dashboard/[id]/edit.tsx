@@ -1,5 +1,9 @@
 import { useRouter } from "next/router";
+import { getServerSession } from "next-auth";
 import { useQuery } from "@tanstack/react-query";
+import type { GetServerSideProps } from "next";
+// UTILS
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 // CUSTOM HOOKS
 import { getListingQueryOptions } from "@/hooks/use-get-listing";
 // UI
@@ -12,6 +16,23 @@ import {
 } from "@/components/edit-listing-form";
 // ICONS
 import { ChevronLeft } from "lucide-react";
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (session == null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};
 
 export default function EditListingPage() {
   const router = useRouter();

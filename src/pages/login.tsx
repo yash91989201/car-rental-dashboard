@@ -1,6 +1,10 @@
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
+import { getServerSession } from "next-auth";
+import type { GetServerSideProps } from "next";
 import { zodResolver } from "@hookform/resolvers/zod";
+// UTILS
+import { authOptions } from "./api/auth/[...nextauth]";
 // SCHEMAS
 import { LoginSchema } from "@/lib/schema";
 // TYPES
@@ -16,7 +20,25 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+// ICONS
 import { LoaderCircle } from "lucide-react";
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (session !== null) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/dashboard",
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};
 
 export default function LoginPage() {
   const form = useForm<LoginSchemaType>({
