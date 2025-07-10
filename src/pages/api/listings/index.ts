@@ -1,4 +1,4 @@
-import { asc, countDistinct, desc, isNull } from "drizzle-orm";
+import { and, asc, countDistinct, desc, eq, isNull } from "drizzle-orm";
 import type { NextApiRequest, NextApiResponse } from "next";
 // UTILS
 import {
@@ -22,7 +22,9 @@ export default async function handler(
     await enforceHandlerSession(req, res);
     enforceHandlerMethod(req)("GET");
 
-    const { limit, order, page, sortBy } = GetListingsQuery.parse(req.query);
+    const { limit, order, page, sortBy, status } = GetListingsQuery.parse(
+      req.query,
+    );
 
     const offset = (page - 1) * limit;
 
@@ -34,9 +36,6 @@ export default async function handler(
         break;
       case "owner":
         sortByColumn = listing.owner;
-        break;
-      case "status":
-        sortByColumn = listing.status;
         break;
       case "updatedAt":
         sortByColumn = listing.updatedAt;
@@ -61,7 +60,12 @@ export default async function handler(
     const listings = await db
       .select()
       .from(listing)
-      .where(isNull(listing.deletedAt))
+      .where(
+        and(
+          status ? eq(listing.status, status) : undefined,
+          isNull(listing.deletedAt),
+        ),
+      )
       .orderBy(sortOrder)
       .limit(limit)
       .offset(offset);

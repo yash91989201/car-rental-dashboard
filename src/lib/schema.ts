@@ -35,10 +35,11 @@ export const GetListingsQuery = z.object({
   limit: z.coerce.number().optional().default(10),
   page: z.coerce.number().optional().default(1),
   sortBy: z
-    .enum(["createdAt", "updatedAt", "carName", "owner", "status"])
+    .enum(["createdAt", "updatedAt", "carName", "owner"])
     .default("createdAt")
     .optional(),
   order: z.enum(["asc", "desc"]).optional().default("desc"),
+  status: z.enum(["pending", "approved", "rejected"]).optional(),
 });
 
 export const PaginationSchema = z.object({

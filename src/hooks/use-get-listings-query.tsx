@@ -8,16 +8,18 @@ interface DashboardQuery extends ParsedUrlQuery {
   limit?: string;
   sortBy?: GetListingsQueryType["sortBy"];
   order?: GetListingsQueryType["order"];
+  status?: GetListingsQueryType["status"];
 }
 
 export function useGetListingsQuery() {
   const router = useRouter();
 
-  const { page, limit, sortBy, order } = router.query as DashboardQuery;
+  const { page, limit, sortBy, order, status } = router.query as DashboardQuery;
   const currentPage = Number(page) || 1;
   const currentLimit = Number(limit) || 10;
   const currentSortBy = sortBy ?? "createdAt";
   const currentOrder = order ?? "desc";
+  const currentStatus = status;
 
   const changePage = (newPage: number) => {
     void router.push({
@@ -47,14 +49,31 @@ export function useGetListingsQuery() {
     });
   };
 
+  const changeStatus = (newStatus?: GetListingsQueryType["status"]) => {
+    if (newStatus === undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { status, ...restQuery } = router.query;
+      void router.push({
+        pathname: router.pathname,
+        query: { ...restQuery, page: 1 },
+      });
+    }
+    void router.push({
+      pathname: router.pathname,
+      query: { ...router.query, status: newStatus, page: 1 },
+    });
+  };
+
   return {
     page: currentPage,
     limit: currentLimit,
     sortBy: currentSortBy,
     order: currentOrder,
+    status: currentStatus,
     changePage,
     changeLimit,
     changeSortBy,
     changeOrder,
+    changeStatus,
   };
 }

@@ -47,10 +47,12 @@ export default function DashboardPage() {
     limit,
     sortBy,
     order,
+    status,
     changeLimit,
     changePage,
     changeSortBy,
     changeOrder,
+    changeStatus,
   } = useGetListingsQuery();
 
   const { data, isPending } = useGetListings({
@@ -58,6 +60,7 @@ export default function DashboardPage() {
     limit,
     sortBy,
     order,
+    status,
   });
 
   const { mutate: generateMockListings, isPending: isGeneratingMockListings } =
@@ -80,6 +83,25 @@ export default function DashboardPage() {
           Generate Mock Listings
         </Button>
         <div className="flex items-center gap-4">
+          <div>
+            <label className="mb-1 block text-xs font-medium">Status</label>
+            <Select
+              value={status ?? "all"}
+              onValueChange={(val) =>
+                changeStatus(val === "all" ? undefined : (val as typeof status))
+              }
+            >
+              <SelectTrigger id="status" className="min-w-[120px]">
+                <SelectValue placeholder="All" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="rejected">Rejected</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div>
             <label className="mb-1 block text-xs font-medium">Sort By</label>
             <Select

@@ -35,13 +35,20 @@ export function getBadgeColor(action: string): string {
 
 export const queryKeys = {
   all: () => ["listings"],
-  getListings: ({ limit, order, page, sortBy }: GetListingsQueryType) => [
+  getListings: ({
+    limit,
+    order,
+    page,
+    sortBy,
+    status,
+  }: GetListingsQueryType) => [
     ...queryKeys.all(),
     "getListings",
     { limit },
     { order },
     { page },
     { sortBy },
+    { status },
   ],
   getListing: ({ id }: GetListingQueryType) => [
     ...queryKeys.all(),
