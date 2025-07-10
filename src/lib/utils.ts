@@ -14,6 +14,8 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getBadgeColor(action: string): string {
   switch (action) {
+    case "pending":
+      return "bg-yellow-100 text-yellow-800 border-yellow-200";
     case "approve":
       return "bg-green-100 text-green-800 border border-green-200";
     case "reject":
@@ -25,7 +27,7 @@ export function getBadgeColor(action: string): string {
     case "edit":
       return "bg-blue-100 text-blue-800 border border-blue-200";
     case "delete":
-      return "bg-yellow-100 text-yellow-800 border border-yellow-200";
+      return "bg-red-100 text-red-800 border border-red-200";
     default:
       return "";
   }

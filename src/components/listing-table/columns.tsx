@@ -1,7 +1,7 @@
 import Link from "next/link";
 // UTILS
 import { buttonVariants } from "@/components/ui/button";
-import { cn, truncateTextWithEllepsis } from "@/lib/utils";
+import { cn, getBadgeColor, truncateTextWithEllepsis } from "@/lib/utils";
 // TYPES
 import type { ListingType } from "@/lib/types";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -38,30 +38,17 @@ export const getColumns = ({
     ),
   },
   {
+    accessorKey: "owner",
+    header: "Owner",
+  },
+  {
     accessorKey: "status",
     header: "Listing Status",
-    cell: ({ row }) => {
-      let className = "";
-      switch (row.original.status) {
-        case "approved":
-          className = "bg-green-200 text-green-900";
-          break;
-        case "pending":
-          className = "bg-yellow-200 text-yellow-900";
-          break;
-        case "rejected":
-          className = "bg-red-200 text-red-900";
-          break;
-        default:
-          className = ""; // Default styling or no specific color
-          break;
-      }
-      return (
-        <Badge variant="default" className={className}>
-          {row.original.status}
-        </Badge>
-      );
-    },
+    cell: ({ row }) => (
+      <Badge variant="default" className={getBadgeColor(row.original.status)}>
+        {row.original.status}
+      </Badge>
+    ),
   },
   {
     accessorKey: "createdAt",

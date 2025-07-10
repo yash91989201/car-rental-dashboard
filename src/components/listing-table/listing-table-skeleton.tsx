@@ -11,13 +11,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export const ListingTableSkeleton = ({ rows = 5 }: { rows?: number }) => {
   const columns = [
-    { key: "id", header: "ID", width: "w-24" },
-    { key: "carName", header: "Car Name", width: "w-32" },
+    { key: "carName", header: "Car Name", width: "w-24" },
     { key: "description", header: "Description", width: "w-32" },
     { key: "owner", header: "Owner", width: "w-32" },
     { key: "status", header: "Listing Status", width: "w-24" },
-    { key: "createdAt", header: "Submitted At", width: "w-32" },
-    { key: "updatedAt", header: "Last Updated At", width: "w-32" },
+    { key: "createdAt", header: "Submitted On", width: "w-32" },
+    { key: "updatedAt", header: "Last Updated", width: "w-32" },
   ];
 
   return (
