@@ -1,13 +1,19 @@
-import type { GetServerSideProps } from "next";
+import { dehydrate } from "@tanstack/react-query";
 import { getServerSession } from "next-auth";
+import type { GetServerSideProps } from "next";
+// SCHEMAS
+import { GetListingsQuery } from "@/lib/schema";
 // UTILS
+import { getQueryClient } from "@/lib/query-client";
 import { authOptions } from "../api/auth/[...nextauth]";
 // CUSTOM HOOKS
-import { useGenerateMockListings } from "@/hooks/use-generate-mock-listings";
-import { useGetListings } from "@/hooks/use-get-listings";
+import {
+  useGetListings,
+  getListingsQueryOptions,
+} from "@/hooks/use-get-listings";
 import { useGetListingsQuery } from "@/hooks/use-get-listings-query";
+import { useGenerateMockListings } from "@/hooks/use-generate-mock-listings";
 // UI
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectTrigger,
@@ -15,14 +21,15 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 // CUSTOM COMPONENTS
+import { UserMenu } from "@/components/user-menu";
 import { ListingTable } from "@/components/listing-table";
-import { ListingTableSkeleton } from "@/components/listing-table/listing-table-skeleton";
 import { TablePagination } from "@/components/listing-table/pagination";
+import { ListingTableSkeleton } from "@/components/listing-table/listing-table-skeleton";
 // ICONS
 import { LoaderCircle } from "lucide-react";
-import { UserMenu } from "@/components/user-menu";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerSession(context.req, context.res, authOptions);
@@ -36,8 +43,28 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
+  const queryParams = GetListingsQuery.safeParse(context.query);
+
+  if (!queryParams.success) {
+    return {
+      props: {},
+    };
+  }
+
+  const queryClient = getQueryClient();
+  const cookieHeader = context.req.headers.cookie;
+
+  await queryClient.fetchQuery(
+    getListingsQueryOptions(
+      queryParams.data,
+      cookieHeader ? { cookie: cookieHeader } : undefined,
+    ),
+  );
+
   return {
-    props: {},
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
   };
 };
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { getServerSession } from "next-auth";
-import { useQuery } from "@tanstack/react-query";
+import { dehydrate, useQuery } from "@tanstack/react-query";
 import type { GetServerSideProps } from "next";
 // UTILS
 import { cn, getBadgeColor } from "@/lib/utils";
@@ -19,6 +19,9 @@ import { ListingLog } from "@/components/listing-log";
 import { ChevronLeft, LoaderCircle } from "lucide-react";
 // TYPES
 import type { ParsedUrlQuery } from "querystring";
+import { getQueryClient } from "@/lib/query-client";
+import { GetListingQuery } from "@/lib/schema";
+import { getListingLogQueryOptions } from "@/hooks/use-get-listing-log";
 
 interface ListingPageQuery extends ParsedUrlQuery {
   id: string;
@@ -36,8 +39,35 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
+  const queryParams = GetListingQuery.safeParse(context.query);
+
+  if (!queryParams.success) {
+    return {
+      props: {},
+    };
+  }
+
+  const queryClient = getQueryClient();
+  const cookieHeader = context.req.headers.cookie;
+
+  await queryClient.fetchQuery(
+    getListingQueryOptions(
+      queryParams.data,
+      cookieHeader ? { cookie: cookieHeader } : undefined,
+    ),
+  );
+
+  await queryClient.fetchQuery(
+    getListingLogQueryOptions(
+      queryParams.data,
+      cookieHeader ? { cookie: cookieHeader } : undefined,
+    ),
+  );
+
   return {
-    props: {},
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
   };
 };
 

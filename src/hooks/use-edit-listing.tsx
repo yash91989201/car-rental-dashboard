@@ -2,13 +2,15 @@ import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 // UTILS
 import { queryKeys } from "@/lib/utils";
-import { queryClient } from "@/lib/query-client";
+import { getQueryClient } from "@/lib/query-client";
 // QUERIES
 import { editListing } from "@/lib/queries";
 // TYPES
 import type { EditListingInputType, EditListingQueryType } from "@/lib/types";
 
 export const useEditListing = () => {
+  const queryClient = getQueryClient();
+
   return useMutation({
     mutationFn: async ({
       query,

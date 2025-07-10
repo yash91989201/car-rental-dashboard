@@ -19,7 +19,7 @@ export function useGetListingsQuery() {
   const currentLimit = Number(limit) || 10;
   const currentSortBy = sortBy ?? "createdAt";
   const currentOrder = order ?? "desc";
-  const currentStatus = status;
+  const currentStatus = status ?? "all";
 
   const changePage = (newPage: number) => {
     void router.push({

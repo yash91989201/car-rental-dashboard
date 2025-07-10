@@ -2,12 +2,14 @@ import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 // UTILS
 import { queryKeys } from "@/lib/utils";
-import { queryClient } from "@/lib/query-client";
+import { getQueryClient } from "@/lib/query-client";
 // QUERIES
 import { generateMockListings } from "@/lib/queries";
 
-export const useGenerateMockListings = () =>
-  useMutation({
+export const useGenerateMockListings = () => {
+  const queryClient = getQueryClient();
+
+  return useMutation({
     mutationFn: generateMockListings,
     onSuccess: ({ message }) => {
       toast.success(message);
@@ -19,3 +21,4 @@ export const useGenerateMockListings = () =>
       await queryClient.invalidateQueries({ queryKey: queryKeys.all() });
     },
   });
+};

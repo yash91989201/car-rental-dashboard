@@ -1,8 +1,12 @@
 import { useRouter } from "next/router";
 import { getServerSession } from "next-auth";
-import { useQuery } from "@tanstack/react-query";
+import { dehydrate, useQuery } from "@tanstack/react-query";
 import type { GetServerSideProps } from "next";
+import type { ParsedUrlQuery } from "querystring";
+// SCHEMAS
+import { GetListingQuery } from "@/lib/schema";
 // UTILS
+import { getQueryClient } from "@/lib/query-client";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 // CUSTOM HOOKS
 import { getListingQueryOptions } from "@/hooks/use-get-listing";
@@ -17,6 +21,10 @@ import {
 // ICONS
 import { ChevronLeft } from "lucide-react";
 
+interface EditListingPageQuery extends ParsedUrlQuery {
+  id: string;
+}
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerSession(context.req, context.res, authOptions);
 
@@ -29,18 +37,37 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
+  const queryParams = GetListingQuery.safeParse(context.query);
+
+  if (!queryParams.success) {
+    return {
+      props: {},
+    };
+  }
+
+  const queryClient = getQueryClient();
+  const cookieHeader = context.req.headers.cookie;
+
+  await queryClient.fetchQuery(
+    getListingQueryOptions(
+      queryParams.data,
+      cookieHeader ? { cookie: cookieHeader } : undefined,
+    ),
+  );
+
   return {
-    props: {},
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
   };
 };
 
 export default function EditListingPage() {
   const router = useRouter();
-  const { id } = router.query;
-  const listingId = Array.isArray(id) ? id[0] : id;
+  const { id: listingId } = router.query as EditListingPageQuery;
 
   const { data, isFetching } = useQuery({
-    ...getListingQueryOptions({ id: listingId! }),
+    ...getListingQueryOptions({ id: listingId }),
     enabled: !!listingId,
   });
 
@@ -67,7 +94,7 @@ export default function EditListingPage() {
             <EditListingFormSkeleton />
           ) : (
             <EditListingForm
-              listingId={listingId!}
+              listingId={listingId}
               defaultValues={{
                 carName: listing.carName,
                 description: listing.description,

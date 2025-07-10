@@ -10,12 +10,16 @@ export const env = createEnv({
     DATABASE_AUTH_TOKEN: z.string(),
     NEXTAUTH_SECRET: z.string(),
   },
-  client: {},
+  client: {
+    NEXT_PUBLIC_BASE_URL: z.url().default("http://localhost:3000"),
+  },
   runtimeEnv: {
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
     DATABASE_AUTH_TOKEN: process.env.DATABASE_AUTH_TOKEN,
     NODE_ENV: process.env.NODE_ENV,
+    // CLIENT ENVIRONMENT VARIABLES
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,

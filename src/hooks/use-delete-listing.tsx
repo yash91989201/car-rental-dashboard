@@ -2,13 +2,14 @@ import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 // UTILS
 import { queryKeys } from "@/lib/utils";
-import { queryClient } from "@/lib/query-client";
+import { getQueryClient } from "@/lib/query-client";
 // QUERIES
 import { deleteListing } from "@/lib/queries";
 // CUSTOM HOOKS
 import { useGetListingsQuery } from "./use-get-listings-query";
 
 export const useDeleteListing = () => {
+  const queryClient = getQueryClient();
   const listingsQuery = useGetListingsQuery();
 
   return useMutation({

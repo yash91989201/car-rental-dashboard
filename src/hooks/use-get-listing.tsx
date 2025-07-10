@@ -6,10 +6,14 @@ import { getListing } from "@/lib/queries";
 // TYPES
 import type { GetListingQueryType } from "@/lib/types";
 
-export const getListingQueryOptions = (query: GetListingQueryType) =>
+export const getListingQueryOptions = (
+  query: GetListingQueryType,
+
+  headers?: HeadersInit,
+) =>
   queryOptions({
     queryKey: queryKeys.getListing(query),
-    queryFn: () => getListing(query),
+    queryFn: () => getListing(query, headers),
   });
 
 export const useGetListing = (query: GetListingQueryType) => {

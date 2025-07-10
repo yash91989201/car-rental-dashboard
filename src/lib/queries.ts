@@ -1,4 +1,5 @@
 // TYPES
+import { env } from "@/env";
 import type {
   GenerateMockListingsInputType,
   GenerateMockListingsOutputType,
@@ -40,22 +41,32 @@ export const generateMockListings = async (
 
 export const getListings = async (
   query: GetListingsQueryType,
+  headers?: HeadersInit,
 ): Promise<GetListingsOutputType> => {
   const params = new URLSearchParams();
 
-  Object.keys(query).forEach((key) => {
-    const value = query[key as keyof GetListingsQueryType];
-    if (value !== undefined) {
-      if (typeof value === "string" && value.length === 0) return;
-
+  Object.entries(query).forEach(([key, value]) => {
+    if (
+      value !== undefined &&
+      !(typeof value === "string" && value.length === 0)
+    ) {
       params.append(key, String(value));
     }
   });
 
   const queryString = params.toString();
-  const url = queryString ? `/api/listings?${queryString}` : "/api/listings";
+  const isServer = typeof window === "undefined";
 
-  const response = await fetch(url);
+  const baseUrl = isServer
+    ? `${env.NEXT_PUBLIC_BASE_URL}/api/listings`
+    : `/api/listings`;
+
+  const url = queryString ? `${baseUrl}?${queryString}` : baseUrl;
+
+  const response = await fetch(url, {
+    headers: isServer ? headers : undefined,
+  });
+
   const output = (await response.json()) as GetListingsOutputType;
 
   if (!output.success) {
@@ -67,8 +78,20 @@ export const getListings = async (
 
 export const getListing = async (
   query: GetListingQueryType,
+  headers?: HeadersInit,
 ): Promise<GetListingOutputType> => {
-  const response = await fetch(`/api/listings/${query.id}`);
+  const isServer = typeof window === "undefined";
+
+  const baseUrl = isServer
+    ? `${env.NEXT_PUBLIC_BASE_URL}/api/listings`
+    : `/api/listings`;
+
+  const url = `${baseUrl}/${query.id}`;
+
+  const response = await fetch(url, {
+    headers: isServer ? headers : undefined,
+  });
+
   const output = (await response.json()) as GetListingOutputType;
 
   if (!output.success) {
@@ -155,10 +178,19 @@ export const deleteListing = async (
 
 export const getListingLog = async (
   query: GetListingLogQueryType,
+  headers?: HeadersInit,
 ): Promise<GetListingLogOutputType> => {
-  const url = `/api/listings/${query.id}/log`;
+  const isServer = typeof window === "undefined";
 
-  const response = await fetch(url);
+  const baseUrl = isServer
+    ? `${env.NEXT_PUBLIC_BASE_URL}/api/listings`
+    : `/api/listings`;
+
+  const url = `${baseUrl}/${query.id}/log`;
+
+  const response = await fetch(url, {
+    headers: isServer ? headers : undefined,
+  });
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);

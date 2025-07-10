@@ -32,14 +32,13 @@ export const GenerateMockListingsOutput = z.object({
 });
 
 export const GetListingsQuery = z.object({
-  limit: z.coerce.number().optional().default(10),
-  page: z.coerce.number().optional().default(1),
+  limit: z.coerce.number().default(10),
+  page: z.coerce.number().default(1),
   sortBy: z
     .enum(["createdAt", "updatedAt", "carName", "owner"])
-    .default("createdAt")
-    .optional(),
-  order: z.enum(["asc", "desc"]).optional().default("desc"),
-  status: z.enum(["pending", "approved", "rejected"]).optional(),
+    .default("createdAt"),
+  order: z.enum(["asc", "desc"]).default("desc"),
+  status: z.enum(["all", "pending", "approved", "rejected"]).default("all"),
 });
 
 export const PaginationSchema = z.object({

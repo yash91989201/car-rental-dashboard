@@ -62,7 +62,7 @@ export default async function handler(
       .from(listing)
       .where(
         and(
-          status ? eq(listing.status, status) : undefined,
+          status !== "all" ? eq(listing.status, status) : undefined,
           isNull(listing.deletedAt),
         ),
       )
