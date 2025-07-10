@@ -11,7 +11,7 @@ export const env = createEnv({
     NEXTAUTH_SECRET: z.string(),
   },
   client: {
-    NEXT_PUBLIC_BASE_URL: z.url().default("http://localhost:3000"),
+    NEXT_PUBLIC_BASE_URL: z.url(),
   },
   runtimeEnv: {
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
