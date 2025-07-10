@@ -37,7 +37,7 @@ export default async function handler(
     }
 
     await db.insert(auditLog).values({
-      action: "delete",
+      action: input.status === "approved" ? "approve" : "reject",
       adminId: session.user.id,
       listingId: query.id,
     });

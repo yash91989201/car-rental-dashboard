@@ -1,6 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import { index, primaryKey, sqliteTableCreator } from "drizzle-orm/sqlite-core";
-import type { AdapterAccountType } from "next-auth/adapters";
+import type { AdapterAccount } from "next-auth/adapters";
 import { createId } from "@paralleldrive/cuid2";
 import type { AuditLogActions, ListingStatusType } from "@/lib/types";
 
@@ -24,10 +24,12 @@ export const listing = createTable("listing", (d) => ({
     .notNull(),
   createdAt: d
     .integer({ mode: "timestamp" })
+    .$type<string>()
     .default(sql`(unixepoch())`)
     .notNull(),
   updatedAt: d
     .integer({ mode: "timestamp" })
+    .$type<string>()
     .default(sql`(unixepoch())`)
     .notNull(),
   deletedAt: d.integer({ mode: "timestamp" }),
@@ -52,7 +54,10 @@ export const auditLog = createTable("audit_log", (d) => ({
     .text({ length: 255 })
     .notNull()
     .references(() => listing.id),
-  createdAt: d.integer({ mode: "timestamp" }).default(sql`(unixepoch())`),
+  createdAt: d
+    .integer({ mode: "timestamp" })
+    .$type<string>()
+    .default(sql`(unixepoch())`),
 }));
 
 export const auditLogRelations = relations(auditLog, ({ one }) => ({
@@ -87,7 +92,7 @@ export const accounts = createTable(
       .text({ length: 255 })
       .notNull()
       .references(() => users.id),
-    type: d.text({ length: 255 }).$type<AdapterAccountType>().notNull(),
+    type: d.text({ length: 255 }).$type<AdapterAccount>().notNull(),
     provider: d.text({ length: 255 }).notNull(),
     providerAccountId: d.text({ length: 255 }).notNull(),
     refresh_token: d.text(),

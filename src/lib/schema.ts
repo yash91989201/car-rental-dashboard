@@ -7,10 +7,8 @@ import type { ListingStatusType } from "./types";
 export const InsertListingSchema = createInsertSchema(listing);
 export const ListingSchema = createSelectSchema(listing).extend({
   status: z.enum(["pending", "approved", "rejected"]),
-  createdAt: z.coerce.string(),
-  updatedAt: z.coerce.string(),
-  deletedAt: z.coerce.string().nullable(),
 });
+
 export const UpdateListingSchema = createInsertSchema(listing);
 
 export const AuditLogSchema = createSelectSchema(auditLog);

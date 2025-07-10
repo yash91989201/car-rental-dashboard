@@ -70,12 +70,7 @@ export default async function handler(
         totalPages: Math.ceil(totalListings / limit),
       },
       data: {
-        listings: listings.map((listing) => ({
-          ...listing,
-          createdAt: listing.createdAt.toISOString(),
-          updatedAt: listing.updatedAt.toISOString(),
-          deletedAt: listing?.deletedAt?.toISOString() ?? null,
-        })),
+        listings,
       },
     });
   } catch (error) {
