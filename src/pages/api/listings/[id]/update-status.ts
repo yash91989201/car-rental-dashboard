@@ -1,17 +1,21 @@
-import {
-  UpdateListingStatusInput,
-  UpdateListingStatusQuery,
-} from "@/lib/schema";
-import type { UpdateListingStatusOutputType } from "@/lib/types";
-import { db } from "@/server/db";
-import { auditLog, listing } from "@/server/db/schema";
+import { and, eq, isNull } from "drizzle-orm";
+import type { NextApiRequest, NextApiResponse } from "next";
+// UTILS
 import {
   enforceHandlerMethod,
   enforceHandlerSession,
   handleApiError,
 } from "@/server/utils";
-import { and, eq, isNull } from "drizzle-orm";
-import type { NextApiRequest, NextApiResponse } from "next";
+// DB TABLES
+import { auditLog, listing } from "@/server/db/schema";
+import { db } from "@/server/db";
+// SCHEMAS
+import {
+  UpdateListingStatusInput,
+  UpdateListingStatusQuery,
+} from "@/lib/schema";
+// TYPES
+import type { UpdateListingStatusOutputType } from "@/lib/types";
 
 export default async function handler(
   req: NextApiRequest,

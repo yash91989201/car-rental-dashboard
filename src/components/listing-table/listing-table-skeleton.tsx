@@ -1,3 +1,4 @@
+// UI
 import {
   Table,
   TableHeader,
@@ -6,7 +7,6 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const ListingTableSkeleton = ({ rows = 5 }: { rows?: number }) => {

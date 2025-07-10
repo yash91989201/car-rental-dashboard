@@ -1,23 +1,36 @@
-import { getListingQueryOptions } from "@/hooks/use-get-listing";
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+// UTILS
+import { cn, getBadgeColor } from "@/lib/utils";
+// CUSTOM HOOKS
+import { useDeleteListing } from "@/hooks/use-delete-listing";
+import { getListingQueryOptions } from "@/hooks/use-get-listing";
+import { useUpdateListingStatus } from "@/hooks/use-update-listing-status";
+// UI
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
-import Link from "next/link";
-import { cn, getBadgeColor } from "@/lib/utils";
-import { useDeleteListing } from "@/hooks/use-delete-listing";
-import { useUpdateListingStatus } from "@/hooks/use-update-listing-status";
+// CUSTOM COMPONENTS
 import { ListingLog } from "@/components/listing-log";
+// ICONS
+import { ChevronLeft } from "lucide-react";
+// TYPES
+import type { ParsedUrlQuery } from "querystring";
+
+interface ListingPageQuery extends ParsedUrlQuery {
+  id: string;
+}
 
 export default function ListingPage() {
   const router = useRouter();
-  const { id } = router.query;
-  const listingId = Array.isArray(id) ? id[0] : id;
+  const { id: listingId } = router.query as ListingPageQuery;
 
   const { data, isPending } = useQuery({
-    ...getListingQueryOptions({ id: listingId! }),
+    ...getListingQueryOptions({ id: listingId }),
     enabled: !!listingId,
   });
+
+  const listing = data?.data?.listing;
 
   const { mutateAsync: updateListingStatus } = useUpdateListingStatus();
   const { mutateAsync: deleteListing } = useDeleteListing();
@@ -30,7 +43,10 @@ export default function ListingPage() {
     void updateListingStatus({ query: { id }, input: { status: "rejected" } });
   };
 
-  const listing = data?.data?.listing;
+  const handleDeleteListing = async () => {
+    await deleteListing({ id: listingId });
+    router.back();
+  };
 
   if (isPending) {
     return (
@@ -49,9 +65,19 @@ export default function ListingPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-4xl space-y-6 px-4 py-6">
-      <div>
-        <h1 className="text-3xl font-semibold">Listing Details</h1>
+    <div className="container mx-auto max-w-6xl space-y-6 px-4 py-6">
+      <div className="flex flex-col gap-3">
+        <div className="flex gap-3">
+          <Button
+            size="icon"
+            className="rounded-full"
+            title="Go Back"
+            onClick={() => router.back()}
+          >
+            <ChevronLeft className="size-5" />
+          </Button>
+          <h1 className="text-3xl font-semibold">Listing Details</h1>
+        </div>
         <p className="text-muted-foreground text-sm">
           View full details of the car listing
         </p>
@@ -66,9 +92,7 @@ export default function ListingPage() {
         <div className="grid gap-3 text-sm sm:grid-cols-2">
           <div>
             <span className="font-medium text-gray-800">Description: </span>
-            <span className="text-gray-600">
-              {listing.description || "N/A"}
-            </span>
+            <span className="text-gray-600">{listing.description}</span>
           </div>
           <div>
             <span className="font-medium text-gray-800">Owner: </span>
@@ -129,7 +153,7 @@ export default function ListingPage() {
           variant="secondary"
           className="border-red-300 bg-red-100 text-red-800 hover:bg-red-200"
           title="Delete listing (soft delete)"
-          onClick={() => deleteListing({ id: listing.id })}
+          onClick={() => handleDeleteListing()}
         >
           Delete
         </Button>

@@ -1,14 +1,17 @@
 import { createId } from "@paralleldrive/cuid2";
-import type { ListingStatusType, ListingType } from "@/lib/types";
+import { getServerSession } from "next-auth";
+import type { NextApiRequest, NextApiResponse } from "next";
+// UTILS
+import { UnauthorizedError } from "./unauthorized-error";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
+// CONSTANTS
 import {
   MOCK_CAR_DESCRIPTIONS,
   MOCK_CAR_NAMES,
   MOCK_OWNER_NAMES,
 } from "@/constants";
-import type { NextApiRequest, NextApiResponse } from "next";
-import { UnauthorizedError } from "./unauthorized-error";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
+// TYPES
+import type { ListingStatusType, ListingType } from "@/lib/types";
 
 const statuses: ListingStatusType[] = ["pending", "approved", "rejected"];
 

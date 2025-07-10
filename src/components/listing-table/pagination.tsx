@@ -1,5 +1,4 @@
-import React from "react";
-
+// UI
 import {
   Pagination,
   PaginationContent,
@@ -14,8 +13,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+// ICONS
+import { ChevronDown } from "lucide-react";
 
 type TablePaginationProps = {
   page: number;

@@ -1,11 +1,15 @@
+import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+// UTILS
+import { queryKeys } from "@/lib/utils";
+// QUERIES
 import { updateListingStatus } from "@/lib/queries";
+// TYPES
 import type {
   UpdateListingStatusInputType,
   UpdateListingStatusQueryType,
 } from "@/lib/types";
-import { toast } from "sonner";
-import { queryKeys } from "@/lib/utils";
+// CUSTOM HOOKS
 import { useGetListingsQuery } from "@/hooks/use-get-listings-query";
 
 export function useUpdateListingStatus() {

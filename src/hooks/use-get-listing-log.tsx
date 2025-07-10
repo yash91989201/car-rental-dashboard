@@ -1,7 +1,10 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { getListingLog } from "@/lib/queries";
-import type { GetListingLogQueryType } from "@/lib/types";
+// UTILS
 import { queryKeys } from "@/lib/utils";
+// QUERIES
+import { getListingLog } from "@/lib/queries";
+// TYPES
+import type { GetListingLogQueryType } from "@/lib/types";
 
 export const getListingLogQueryOptions = (query: GetListingLogQueryType) =>
   queryOptions({

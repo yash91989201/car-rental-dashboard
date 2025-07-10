@@ -1,20 +1,22 @@
 import z from "zod";
-import { auditLog, listing, users } from "@/server/db/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+// DB TABLES
+import { auditLog, listing, users } from "@/server/db/schema";
+// TYPES
 import type { ListingStatusType } from "./types";
 
-// db tables schema
-const UserSchema = createSelectSchema(users);
+// DB TABLE SCHEMAS
+export const UserSchema = createSelectSchema(users);
+
 export const InsertListingSchema = createInsertSchema(listing);
+export const UpdateListingSchema = createInsertSchema(listing);
 export const ListingSchema = createSelectSchema(listing).extend({
   status: z.enum(["pending", "approved", "rejected"]),
 });
 
-export const UpdateListingSchema = createInsertSchema(listing);
-
 export const AuditLogSchema = createSelectSchema(auditLog);
 
-// api schema
+// API SCHEMAS
 export const GenerateMockListingsInput = z.object({
   count: z.number(),
 });
@@ -143,6 +145,7 @@ export const GetListingLogOutput = z.object({
     .optional(),
 });
 
+// AUTH SCHEMAS
 export const LoginSchema = z.object({
   email: z.email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters long"),

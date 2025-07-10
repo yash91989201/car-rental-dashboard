@@ -1,3 +1,4 @@
+// TYPES
 import type {
   InsertListingSchema,
   ListingSchema,

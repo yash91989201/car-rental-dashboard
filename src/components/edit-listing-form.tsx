@@ -1,9 +1,11 @@
-import { useForm, type SubmitHandler } from "react-hook-form";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useForm } from "react-hook-form";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+// SCHEMA
 import { EditListingInput } from "@/lib/schema";
+// TYPES
+import type { SubmitHandler } from "react-hook-form";
 import type { EditListingInputType } from "@/lib/types";
-import { useEditListing } from "@/hooks/use-edit-listing";
+// UI
 import {
   Form,
   FormControl,
@@ -14,6 +16,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+// CUSTOM HOOKS
+import { useEditListing } from "@/hooks/use-edit-listing";
+// ICONS
 import { LoaderCircle } from "lucide-react";
 
 interface EditListingFormProps {

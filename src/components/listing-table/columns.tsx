@@ -1,11 +1,17 @@
+import Link from "next/link";
+// UTILS
+import { buttonVariants } from "@/components/ui/button";
+import { cn, truncateTextWithEllepsis } from "@/lib/utils";
+// TYPES
 import type { ListingType } from "@/lib/types";
 import type { ColumnDef } from "@tanstack/react-table";
+// UI
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "../ui/button";
-import Link from "next/link";
-import { cn, truncateTextWithEllepsis } from "@/lib/utils";
-import { Eye, SquarePen, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+// CUSTOM COMPONENTS
 import { CopyButton } from "@/components/copy-button";
+// ICONS
+import { Eye, SquarePen, Trash2 } from "lucide-react";
 
 type ColumnProps = {
   approveListing: (id: string) => void;
@@ -59,12 +65,12 @@ export const getColumns = ({
   },
   {
     accessorKey: "createdAt",
-    header: "Submitted At",
+    header: "Submitted On",
     cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString(),
   },
   {
     accessorKey: "updatedAt",
-    header: "Last Updated At",
+    header: "Last Updated",
     cell: ({ row }) => new Date(row.original.updatedAt).toLocaleDateString(),
   },
   {

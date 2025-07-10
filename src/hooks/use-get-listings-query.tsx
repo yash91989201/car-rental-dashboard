@@ -1,6 +1,7 @@
-import type { GetListingsQueryType } from "@/lib/types";
 import { useRouter } from "next/router";
+// TYPES
 import type { ParsedUrlQuery } from "querystring";
+import type { GetListingsQueryType } from "@/lib/types";
 
 interface DashboardQuery extends ParsedUrlQuery {
   page?: string;

@@ -1,14 +1,18 @@
-import { GetListingsQuery } from "@/lib/schema";
-import type { GetListingsOutputType } from "@/lib/types";
-import { db } from "@/server/db";
-import { listing } from "@/server/db/schema";
+import { asc, countDistinct, desc, isNull } from "drizzle-orm";
+import type { NextApiRequest, NextApiResponse } from "next";
+// UTILS
 import {
   enforceHandlerMethod,
   enforceHandlerSession,
   handleApiError,
 } from "@/server/utils";
-import { asc, countDistinct, desc, isNull } from "drizzle-orm";
-import type { NextApiRequest, NextApiResponse } from "next";
+// DB TABLES
+import { db } from "@/server/db";
+import { listing } from "@/server/db/schema";
+// SCHEMAS
+import { GetListingsQuery } from "@/lib/schema";
+// TYPES
+import type { GetListingsOutputType } from "@/lib/types";
 
 export default async function handler(
   req: NextApiRequest,

@@ -1,14 +1,18 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { and, eq, isNull } from "drizzle-orm";
+// UTILS
 import { db } from "@/server/db";
-import { GetListingQuery } from "@/lib/schema";
-import type { GetListingOutputType } from "@/lib/types";
 import {
   enforceHandlerMethod,
   enforceHandlerSession,
   handleApiError,
 } from "@/server/utils";
-import { and, eq, isNull } from "drizzle-orm";
+// DB TABLES
 import { listing } from "@/server/db/schema";
+// SCHEMAS
+import { GetListingQuery } from "@/lib/schema";
+// TYPES
+import type { GetListingOutputType } from "@/lib/types";
 
 export default async function handler(
   req: NextApiRequest,

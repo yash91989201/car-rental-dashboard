@@ -1,14 +1,18 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { db } from "@/server/db";
-import { DeleteListingQuery } from "@/lib/schema";
-import type { DeleteListingOutputType } from "@/lib/types";
 import { and, eq, isNull } from "drizzle-orm";
-import { auditLog, listing } from "@/server/db/schema";
+// UTILS
 import {
   enforceHandlerMethod,
   enforceHandlerSession,
   handleApiError,
 } from "@/server/utils";
+// DB TABLES
+import { db } from "@/server/db";
+import { auditLog, listing } from "@/server/db/schema";
+// SCHEMAS
+import { DeleteListingQuery } from "@/lib/schema";
+// TYPES
+import type { DeleteListingOutputType } from "@/lib/types";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,

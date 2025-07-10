@@ -1,4 +1,11 @@
-import { Button } from "@/components/ui/button";
+import { signIn } from "next-auth/react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+// SCHEMAS
+import { LoginSchema } from "@/lib/schema";
+// TYPES
+import type { LoginSchemaType } from "@/lib/types";
+// UI
 import {
   Form,
   FormControl,
@@ -8,11 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { LoginSchema } from "@/lib/schema";
-import type { LoginSchemaType } from "@/lib/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
-import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
   const form = useForm<LoginSchemaType>({

@@ -1,13 +1,17 @@
-import { listing } from "@/server/db/schema";
-import { db } from "@/server/db";
+import type { NextApiRequest, NextApiResponse } from "next";
+// UTILS
 import {
   enforceHandlerMethod,
   enforceHandlerSession,
   generateMockListings,
   handleApiError,
 } from "@/server/utils";
+// DB TABLES
+import { listing } from "@/server/db/schema";
+import { db } from "@/server/db";
+// SCHEMAS
 import { GenerateMockListingsInput } from "@/lib/schema";
-import type { NextApiRequest, NextApiResponse } from "next";
+// TYPES
 import type { GenerateMockListingsOutputType } from "@/lib/types";
 
 export default async function handler(

@@ -1,14 +1,18 @@
-import { EditListingQuery, EditListingInput } from "@/lib/schema";
-import type { EditListingOutputType } from "@/lib/types";
-import { db } from "@/server/db";
-import { auditLog, listing } from "@/server/db/schema";
+import { and, eq, isNull } from "drizzle-orm";
+import type { NextApiRequest, NextApiResponse } from "next";
+// UTILS
 import {
   enforceHandlerMethod,
   enforceHandlerSession,
   handleApiError,
 } from "@/server/utils";
-import { and, eq, isNull } from "drizzle-orm";
-import type { NextApiRequest, NextApiResponse } from "next";
+// DB TABLES
+import { db } from "@/server/db";
+import { auditLog, listing } from "@/server/db/schema";
+// SCHEMAS
+import { EditListingQuery, EditListingInput } from "@/lib/schema";
+// TYPES
+import type { EditListingOutputType } from "@/lib/types";
 
 export default async function handler(
   req: NextApiRequest,

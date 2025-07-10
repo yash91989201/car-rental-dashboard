@@ -1,5 +1,10 @@
+import { useState } from "react";
+import { useSession } from "next-auth/react";
+// UTILS
+import { getBadgeColor } from "@/lib/utils";
+// CUSTOM HOOKS
 import { useGetListingLog } from "@/hooks/use-get-listing-log";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+// UI
 import {
   Table,
   TableHeader,
@@ -10,17 +15,16 @@ import {
   TableCaption,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { getBadgeColor } from "@/lib/utils";
-import { useState } from "react";
-import { useSession } from "next-auth/react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export const ListingLog = ({ id }: { id: string }) => {
-  const [logFilter, setLogFilter] = useState<"all" | "self">("all");
-  const { data, isPending } = useGetListingLog({ id });
-  const logs = data?.data?.logs ?? [];
   const session = useSession();
+  const { data, isPending } = useGetListingLog({ id });
+  const [logFilter, setLogFilter] = useState<"all" | "self">("all");
+
   const userId = session.data?.user.id;
+  const logs = data?.data?.logs ?? [];
 
   const filteredLogs =
     logFilter === "self" ? logs.filter((log) => log.adminId === userId) : logs;
@@ -31,7 +35,6 @@ export const ListingLog = ({ id }: { id: string }) => {
         <CardTitle className="text-lg font-semibold">Audit Log</CardTitle>
       </CardHeader>
       <CardContent>
-        {/* ToggleGroup to select log filter */}
         <div className="mb-2 flex justify-end">
           <ToggleGroup
             type="single"

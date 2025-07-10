@@ -1,9 +1,12 @@
-import { editListing } from "@/lib/queries";
-import { queryClient } from "@/lib/query-client";
-import type { EditListingInputType, EditListingQueryType } from "@/lib/types";
-import { queryKeys } from "@/lib/utils";
-import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+// UTILS
+import { queryKeys } from "@/lib/utils";
+import { queryClient } from "@/lib/query-client";
+// QUERIES
+import { editListing } from "@/lib/queries";
+// TYPES
+import type { EditListingInputType, EditListingQueryType } from "@/lib/types";
 
 export const useEditListing = () => {
   return useMutation({

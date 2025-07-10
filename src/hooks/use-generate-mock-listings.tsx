@@ -1,8 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
-import { generateMockListings } from "@/lib/queries";
-import { queryClient } from "@/lib/query-client";
-import { queryKeys } from "@/lib/utils";
 import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+// UTILS
+import { queryKeys } from "@/lib/utils";
+import { queryClient } from "@/lib/query-client";
+// QUERIES
+import { generateMockListings } from "@/lib/queries";
 
 export const useGenerateMockListings = () =>
   useMutation({

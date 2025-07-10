@@ -3,7 +3,14 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+// UTILS
 import { getColumns } from "./columns";
+// TYPES
+import type { ListingType } from "@/lib/types";
+// CUSTOM HOOKS
+import { useUpdateListingStatus } from "@/hooks/use-update-listing-status";
+import { useDeleteListing } from "@/hooks/use-delete-listing";
+// UI
 import {
   Table,
   TableHeader,
@@ -12,9 +19,6 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import type { ListingType } from "@/lib/types";
-import { useUpdateListingStatus } from "@/hooks/use-update-listing-status";
-import { useDeleteListing } from "@/hooks/use-delete-listing";
 
 export const ListingTable = ({ listings }: { listings: ListingType[] }) => {
   const { mutateAsync: updateListingStatus } = useUpdateListingStatus();

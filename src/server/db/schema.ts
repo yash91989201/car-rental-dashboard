@@ -1,7 +1,8 @@
 import { relations, sql } from "drizzle-orm";
-import { index, primaryKey, sqliteTableCreator } from "drizzle-orm/sqlite-core";
-import type { AdapterAccount } from "next-auth/adapters";
 import { createId } from "@paralleldrive/cuid2";
+import type { AdapterAccount } from "next-auth/adapters";
+import { index, primaryKey, sqliteTableCreator } from "drizzle-orm/sqlite-core";
+// TYPES
 import type { AuditLogActions, ListingStatusType } from "@/lib/types";
 
 export const createTable = sqliteTableCreator(
@@ -93,7 +94,7 @@ export const accounts = createTable(
       .text({ length: 255 })
       .notNull()
       .references(() => users.id),
-    type: d.text({ length: 255 }).$type<AdapterAccount>().notNull(),
+    type: d.text({ length: 255 }).$type<AdapterAccount["type"]>().notNull(),
     provider: d.text({ length: 255 }).notNull(),
     providerAccountId: d.text({ length: 255 }).notNull(),
     refresh_token: d.text(),

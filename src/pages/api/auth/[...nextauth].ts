@@ -1,18 +1,21 @@
-import type { DefaultSession } from "next-auth";
-import { db } from "@/server/db";
 import bcrypt from "bcrypt";
+import NextAuth from "next-auth";
+import { eq } from "drizzle-orm";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import Credentials from "next-auth/providers/credentials";
+// UTILS
+import { db } from "@/server/db";
+import { getUserById } from "@/server/utils/user";
+// DB TABLES
 import {
   accounts,
   sessions,
   users,
   verificationTokens,
 } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
+// TYPES
+import type { DefaultSession } from "next-auth";
 import type { AuthOptions } from "next-auth";
-import { getUserById } from "@/server/utils/user";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {

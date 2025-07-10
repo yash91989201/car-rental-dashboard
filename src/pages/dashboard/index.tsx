@@ -1,8 +1,12 @@
+import type { GetServerSideProps } from "next";
+import { getServerSession } from "next-auth";
+// UTILS
+import { authOptions } from "../api/auth/[...nextauth]";
+// CUSTOM HOOKS
 import { useGenerateMockListings } from "@/hooks/use-generate-mock-listings";
 import { useGetListings } from "@/hooks/use-get-listings";
-import { ListingTable } from "@/components/listing-table";
-import { ListingTableSkeleton } from "@/components/listing-table/listing-table-skeleton";
-
+import { useGetListingsQuery } from "@/hooks/use-get-listings-query";
+// UI
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -12,12 +16,12 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useGetListingsQuery } from "@/hooks/use-get-listings-query";
+// CUSTOM COMPONENTS
+import { ListingTable } from "@/components/listing-table";
+import { ListingTableSkeleton } from "@/components/listing-table/listing-table-skeleton";
 import { TablePagination } from "@/components/listing-table/pagination";
+// ICONS
 import { LoaderCircle } from "lucide-react";
-import type { GetServerSideProps } from "next";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerSession(context.req, context.res, authOptions);

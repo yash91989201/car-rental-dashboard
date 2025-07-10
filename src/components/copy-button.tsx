@@ -1,7 +1,10 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Check, Copy } from "lucide-react";
+// UTILS
 import { cn } from "@/lib/utils";
+// UI
+import { Button } from "@/components/ui/button";
+// ICONS
+import { Check, Copy } from "lucide-react";
 
 interface CopyButtonProps {
   textToCopy: string;
