@@ -114,7 +114,6 @@ export default function DashboardPage() {
               <SelectContent>
                 <SelectItem value="carName">Car Name</SelectItem>
                 <SelectItem value="owner">Owner</SelectItem>
-                <SelectItem value="status">Status</SelectItem>
                 <SelectItem value="createdAt">Submitted On</SelectItem>
                 <SelectItem value="updatedAt">Last Updated</SelectItem>
               </SelectContent>
