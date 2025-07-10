@@ -42,85 +42,15 @@ This project is an internal admin dashboard for reviewing, approving, rejecting,
 - `src/constants/` — Constants and enums
 - `src/styles/` — Global styles (Tailwind)
 
-## Requirements
-
-- Node.js 18+ (or Bun)
-- SQLite (all setup handled automatically)
-- (Recommended) [Bun](https://bun.sh/) for fast scripts, but npm/yarn work too.
-
-## Getting Started
-
-### 1. Clone the repository
-
-```bash
-git clone <repo_url>
-cd car-rental-dashboard
-```
-
-### 2. Install dependencies
-
-```bash
-bun install     # or
-npm install     # or
-yarn install
-```
-
-### 3. Set up the database (SQLite)
-
-By default, the app uses SQLite with Drizzle ORM. Run the following to create the schema (in-memory by default, or file for persistence):
-
-```bash
-bun run db:push     # or
-npm run db:push
-```
-
-### 4. Start the development server
-
-```bash
-bun run dev     # or
-npm run dev
-```
-
-Visit [http://localhost:3000](http://localhost:3000).
-
-### 5. Login
-
-Go to `/login` and use any email/password combination. (Accounts are created automatically on first sign-in.)
-
-### 6. Generate mock listings
-
-On the dashboard, click "Generate Mock Listings" to add demo listings.
-
-## Scripts
-
-- `dev` — Start local dev server
-- `build` — Build for production
-- `start` — Start production server
-- `db:push` — Create DB schema (Drizzle ORM)
-- `db:generate` — Generate migrations
-- `db:migrate` — Run migrations
-- `lint` — Lint code
-- `typecheck` — TypeScript check
-
 ## Deployment
 
 The app can be deployed to [Vercel](https://vercel.com/) with zero configuration. SQLite is supported—no cloud DB setup needed. For SQLite persistence, ensure the database file is included in `vercel.json` or as a build output.
-
-**Local:**
-
-- Use the Getting Started steps above.
-
-**Vercel:**
-
-- Push to a GitHub repo and import into Vercel. Vercel will detect Next.js and build automatically.
-- Ensure you add environment variables for any secrets (see `.env.example` if present).
-- For production SQLite, configure Drizzle and Next.js for file-based SQLite; see Drizzle ORM docs for details.
 
 ## Assessment Task
 
 This project was built to solve the following assessment:
 
-> **Task:** Build a Custom Admin Dashboard for Managing User-Generated Car Rental Listings. Admins can review, approve, reject, or edit listings. Use Next.js (SSR, API routes), protect routes, use React Context, TailwindCSS, sorting, pagination, and filtering. See `/login` to begin.
+> **Task:** Build a Custom Admin Dashboard for Managing User-Generated Car Rental Listings. Admins can review, approve, reject, or edit listings. Use Next.js , protect routes, use React Context, TailwindCSS, sorting, pagination, and filtering. See `/login` to begin.
 
 ## License
 
