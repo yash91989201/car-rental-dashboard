@@ -8,8 +8,6 @@ import type { ColumnDef } from "@tanstack/react-table";
 // UI
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-// CUSTOM COMPONENTS
-import { CopyButton } from "@/components/copy-button";
 // ICONS
 import { Eye, SquarePen, Trash2 } from "lucide-react";
 
@@ -99,7 +97,6 @@ export const getColumns = ({
     cell: ({ row }) => {
       return (
         <div className="invisible flex items-center gap-3 group-hover:visible">
-          <CopyButton textToCopy={row.original.id} />
           <Link
             className={cn(
               buttonVariants({
