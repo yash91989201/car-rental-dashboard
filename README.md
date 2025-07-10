@@ -7,7 +7,7 @@ This project is an internal admin dashboard for reviewing, approving, rejecting,
 ## Features
 
 - **Login & Authentication**: Secure login (email & password, with registration on first sign-in), using NextAuth.
-- **Dashboard**: Paginated, sortable table view of all car rental listings, fetched from an API (mock or SQLite-backed).
+- **Dashboard**: Paginated, sortable table view of all car rental listings, fetched from an API (SQLite-backed).
 - **Actionable Table**: Each listing row provides Approve, Reject, Edit, and Delete actions. Approve/Reject update listing status immediately.
 - **Edit Listings**: Editing opens a form with pre-filled data for updating car name, description, or owner.
 - **Generate Mock Listings**: Quickly populate the database with demo data for easy testing.
@@ -20,7 +20,6 @@ This project is an internal admin dashboard for reviewing, approving, rejecting,
 
 - [x] Filtering by listing status (approved, pending, rejected)
 - [x] Audit trail/logging
-- [x] Run using SQLite
 - [x] Performance optimizations (uses React Query, only re-renders changed rows)
 - [x] Vercel deployment instructions
 
@@ -29,7 +28,7 @@ This project is an internal admin dashboard for reviewing, approving, rejecting,
 - **Framework:** Next.js (with SSR, API routes, and getServerSideProps)
 - **UI:** TailwindCSS, Radix UI (for components)
 - **State management:** React Context API, React Query
-- **Database:** Drizzle ORM with SQLite (in-memory for demo or file-based for persistence)
+- **Database:** Drizzle ORM with SQLite
 - **Authentication:** NextAuth.js (credentials provider, secure JWT)
 - **Validation:** Zod schemas, React Hook Form
 
@@ -41,10 +40,6 @@ This project is an internal admin dashboard for reviewing, approving, rejecting,
 - `src/lib/` — Utilities, types, db queries
 - `src/constants/` — Constants and enums
 - `src/styles/` — Global styles (Tailwind)
-
-## Deployment
-
-The app can be deployed to [Vercel](https://vercel.com/) with zero configuration. SQLite is supported—no cloud DB setup needed. For SQLite persistence, ensure the database file is included in `vercel.json` or as a build output.
 
 ## Assessment Task
 
