@@ -4,6 +4,10 @@
 
 This project is an internal admin dashboard for reviewing, approving, rejecting, and editing car rental listings submitted by users. It was built as part of a technical assessment to demonstrate proficiency with Next.js, React, API integration, and clean UI/UX practices.
 
+## 🎥 Demo Video
+
+<video src="./public/videos/demo-video.webm" controls width="100%" />
+
 ## Features
 
 - **Login & Authentication**: Secure login (email & password, with registration on first sign-in), using NextAuth.
@@ -47,10 +51,26 @@ This project was built to solve the following assessment:
 
 > **Task:** Build a Custom Admin Dashboard for Managing User-Generated Car Rental Listings. Admins can review, approve, reject, or edit listings. Use Next.js , protect routes, use React Context, TailwindCSS, sorting, pagination, and filtering. See `/login` to begin.
 
-## License
-
-MIT
-
 ---
 
-For more details, see the source code and comments throughout the project.
+## 📸 Screenshots
+
+### 🖥️ Dashboard Page
+
+![Dashboard](./public/screenshots/dashboard-page.png)
+
+### 🔽 Sort Dropdown on Dashboard
+
+![Sort Dropdown](./public/screenshots/dashboard-sort-by-dropdown.png)
+
+### ✅ Status Filter on Dashboard
+
+![Status Filter](./public/screenshots/dashboard-status-filter-dropdown.png)
+
+### ✏️ Edit Listing Form
+
+![Edit Listing](./public/screenshots/edit-listing-page.png)
+
+### 📑 Listing Details with Audit Logs
+
+![Listing Info & Audit Logs](./public/screenshots/listing-info-and-audit-logs-page.png)
