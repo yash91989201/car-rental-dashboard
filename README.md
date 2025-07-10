@@ -6,8 +6,6 @@ This project is an internal admin dashboard for reviewing, approving, rejecting,
 
 ## 🎥 Demo Video
 
-<video src="./public/videos/demo-video.webm" controls width="100%" />
-
 ## Features
 
 - **Login & Authentication**: Secure login (email & password, with registration on first sign-in), using NextAuth.
