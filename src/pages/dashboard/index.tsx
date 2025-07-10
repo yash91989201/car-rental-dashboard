@@ -22,6 +22,7 @@ import { ListingTableSkeleton } from "@/components/listing-table/listing-table-s
 import { TablePagination } from "@/components/listing-table/pagination";
 // ICONS
 import { LoaderCircle } from "lucide-react";
+import { UserMenu } from "@/components/user-menu";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerSession(context.req, context.res, authOptions);
@@ -64,7 +65,10 @@ export default function DashboardPage() {
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="mb-6 text-3xl font-bold">Dashboard</h1>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="mb-6 text-3xl font-bold">Dashboard</h1>
+        <UserMenu />
+      </div>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Button
           onClick={() => generateMockListings({ count: 10 })}

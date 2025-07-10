@@ -89,8 +89,8 @@ export const ListingTable = ({ listings }: { listings: ListingType[] }) => {
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={getColumns.length} className="h-24 text-center">
-              No results.
+            <TableCell colSpan={7} className="h-24 text-center">
+              No listings found!
             </TableCell>
           </TableRow>
         )}

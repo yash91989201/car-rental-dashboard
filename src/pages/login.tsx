@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { LoaderCircle } from "lucide-react";
 
 export default function LoginPage() {
   const form = useForm<LoginSchemaType>({
@@ -45,7 +46,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8 rounded-xl bg-white p-8 shadow-lg">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Sign in to your account
+            Sign in to Car Rental Dashboard
           </h2>
         </div>
         <Form {...form}>
@@ -98,7 +99,10 @@ export default function LoginPage() {
               className="w-full"
               disabled={form.formState.isSubmitting}
             >
-              {form.formState.isSubmitting ? "Signing in..." : "Sign in"}
+              {form.formState.isSubmitting && (
+                <LoaderCircle className="mr-1.5 size-4.5 animate-spin" />
+              )}
+              Login / Register
             </Button>
           </form>
         </Form>
