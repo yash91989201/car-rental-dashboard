@@ -1,10 +1,33 @@
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 import type { ClassValue } from "clsx";
-import type { GetListingQueryType, GetListingsQueryType } from "./types";
+import type {
+  GetListingLogQueryType,
+  GetListingQueryType,
+  GetListingsQueryType,
+} from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function getBadgeColor(action: string): string {
+  switch (action) {
+    case "approve":
+      return "bg-green-100 text-green-800 border border-green-200";
+    case "reject":
+      return "bg-red-100 text-red-800 border border-red-200";
+    case "approved":
+      return "bg-green-100 text-green-800 border border-green-200";
+    case "rejected":
+      return "bg-red-100 text-red-800 border border-red-200";
+    case "edit":
+      return "bg-blue-100 text-blue-800 border border-blue-200";
+    case "delete":
+      return "bg-yellow-100 text-yellow-800 border border-yellow-200";
+    default:
+      return "";
+  }
 }
 
 export const queryKeys = {
@@ -20,6 +43,11 @@ export const queryKeys = {
   getListing: ({ id }: GetListingQueryType) => [
     ...queryKeys.all(),
     "getListing",
+    { id },
+  ],
+  getListingLog: ({ id }: GetListingLogQueryType) => [
+    ...queryKeys.all(),
+    "getListingLog",
     { id },
   ],
 };

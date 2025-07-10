@@ -24,6 +24,10 @@ export const useEditListing = () => {
       await queryClient.refetchQueries({
         queryKey: queryKeys.getListing({ id: variables.query.id }),
       });
+
+      await queryClient.refetchQueries({
+        queryKey: queryKeys.getListingLog({ id: variables.query.id }),
+      });
     },
   });
 };

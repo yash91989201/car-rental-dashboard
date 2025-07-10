@@ -13,6 +13,8 @@ import type {
   EditListingOutputType,
   DeleteListingOutputType,
   DeleteListingQueryType,
+  GetListingLogQueryType,
+  GetListingLogOutputType,
 } from "@/lib/types";
 
 export const generateMockListings = async (
@@ -137,7 +139,31 @@ export const deleteListing = async (
     },
   });
 
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
   const output = (await response.json()) as DeleteListingOutputType;
+
+  if (!output.success) {
+    throw new Error(output.message);
+  }
+
+  return output;
+};
+
+export const getListingLog = async (
+  query: GetListingLogQueryType,
+): Promise<GetListingLogOutputType> => {
+  const url = `/api/listings/${query.id}/log`;
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const output = (await response.json()) as GetListingLogOutputType;
 
   if (!output.success) {
     throw new Error(output.message);

@@ -57,6 +57,7 @@ export const auditLog = createTable("audit_log", (d) => ({
   createdAt: d
     .integer({ mode: "timestamp" })
     .$type<string>()
+    .notNull()
     .default(sql`(unixepoch())`),
 }));
 

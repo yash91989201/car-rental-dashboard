@@ -22,6 +22,10 @@ export default async function handler(
 
     const auditLogs = await db.query.auditLog.findMany({
       where: eq(auditLog.listingId, queries.id),
+      orderBy: (auditLog, { desc }) => [desc(auditLog.createdAt)],
+      with: {
+        admin: true,
+      },
     });
 
     res.status(200).json({

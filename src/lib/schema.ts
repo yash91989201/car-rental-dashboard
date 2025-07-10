@@ -1,9 +1,10 @@
 import z from "zod";
-import { auditLog, listing } from "@/server/db/schema";
+import { auditLog, listing, users } from "@/server/db/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import type { ListingStatusType } from "./types";
 
 // db tables schema
+const UserSchema = createSelectSchema(users);
 export const InsertListingSchema = createInsertSchema(listing);
 export const ListingSchema = createSelectSchema(listing).extend({
   status: z.enum(["pending", "approved", "rejected"]),
@@ -133,7 +134,11 @@ export const GetListingLogOutput = z.object({
   message: z.string(),
   data: z
     .object({
-      logs: z.array(AuditLogSchema),
+      logs: z.array(
+        AuditLogSchema.extend({
+          admin: UserSchema,
+        }),
+      ),
     })
     .optional(),
 });

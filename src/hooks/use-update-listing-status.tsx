@@ -26,9 +26,17 @@ export function useUpdateListingStatus() {
     onError: ({ message }) => {
       toast.error(message);
     },
-    onSettled: async () => {
+    onSettled: async (_, __, variables) => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.getListings(listingsQuery),
+      });
+
+      await queryClient.refetchQueries({
+        queryKey: queryKeys.getListing({ id: variables.query.id }),
+      });
+
+      await queryClient.refetchQueries({
+        queryKey: queryKeys.getListingLog({ id: variables.query.id }),
       });
     },
   });

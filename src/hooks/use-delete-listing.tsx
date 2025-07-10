@@ -16,9 +16,13 @@ export const useDeleteListing = () => {
     onError: (error) => {
       toast.error(error.message);
     },
-    onSettled: async () => {
+    onSettled: async (_, __, variables) => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.getListings(listingsQuery),
+      });
+
+      await queryClient.refetchQueries({
+        queryKey: queryKeys.getListingLog({ id: variables.id }),
       });
     },
   });
