@@ -13,7 +13,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 // CUSTOM COMPONENTS
 import { ListingLog } from "@/components/listing-log";
 // ICONS
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, LoaderCircle } from "lucide-react";
 // TYPES
 import type { ParsedUrlQuery } from "querystring";
 
@@ -25,15 +25,20 @@ export default function ListingPage() {
   const router = useRouter();
   const { id: listingId } = router.query as ListingPageQuery;
 
-  const { data, isPending } = useQuery({
+  const { data, isPending: isListingLoading } = useQuery({
     ...getListingQueryOptions({ id: listingId }),
     enabled: !!listingId,
   });
 
   const listing = data?.data?.listing;
 
-  const { mutateAsync: updateListingStatus } = useUpdateListingStatus();
-  const { mutateAsync: deleteListing } = useDeleteListing();
+  const {
+    mutateAsync: updateListingStatus,
+    isPending: isUpdatingStatus,
+    variables: updateStatusVariables,
+  } = useUpdateListingStatus();
+  const { mutateAsync: deleteListing, isPending: isDeletingListing } =
+    useDeleteListing();
 
   const approveListing = (id: string) => {
     void updateListingStatus({ query: { id }, input: { status: "approved" } });
@@ -48,7 +53,7 @@ export default function ListingPage() {
     router.back();
   };
 
-  if (isPending) {
+  if (isListingLoading) {
     return (
       <div className="text-muted-foreground flex h-[60vh] items-center justify-center">
         Loading listing details...
@@ -124,6 +129,10 @@ export default function ListingPage() {
           }
           onClick={() => approveListing(listing.id)}
         >
+          {isUpdatingStatus &&
+            updateStatusVariables.input.status === "approved" && (
+              <LoaderCircle className="mr-1.5 size-4.5 animate-spin" />
+            )}
           Approve
         </Button>
 
@@ -135,6 +144,10 @@ export default function ListingPage() {
           }
           onClick={() => rejectListing(listing.id)}
         >
+          {isUpdatingStatus &&
+            updateStatusVariables.input.status === "rejected" && (
+              <LoaderCircle className="mr-1.5 size-4.5 animate-spin" />
+            )}
           Reject
         </Button>
 
@@ -155,6 +168,9 @@ export default function ListingPage() {
           title="Delete listing (soft delete)"
           onClick={() => handleDeleteListing()}
         >
+          {isDeletingListing && (
+            <LoaderCircle className="mr-1.5 size-4.5 animate-spin" />
+          )}
           Delete
         </Button>
       </div>
