@@ -69,18 +69,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function DashboardPage() {
-  const {
-    page,
-    limit,
-    sortBy,
-    order,
-    status,
-    changeLimit,
-    changePage,
-    changeSortBy,
-    changeOrder,
-    changeStatus,
-  } = useGetListingsQuery();
+  const { page, limit, sortBy, order, status, updateListingsQuery } =
+    useGetListingsQuery();
 
   const { data, isPending } = useGetListings({
     page,
@@ -115,7 +105,7 @@ export default function DashboardPage() {
             <Select
               value={status ?? "all"}
               onValueChange={(val) =>
-                changeStatus(val === "all" ? undefined : (val as typeof status))
+                updateListingsQuery({ status: val as typeof status })
               }
             >
               <SelectTrigger id="status" className="min-w-[120px]">
@@ -133,7 +123,9 @@ export default function DashboardPage() {
             <label className="mb-1 block text-xs font-medium">Sort By</label>
             <Select
               value={sortBy}
-              onValueChange={(val) => val && changeSortBy(val as typeof sortBy)}
+              onValueChange={(val) =>
+                updateListingsQuery({ sortBy: val as typeof sortBy })
+              }
             >
               <SelectTrigger id="sortBy" className="min-w-[120px]">
                 <SelectValue />
@@ -152,7 +144,9 @@ export default function DashboardPage() {
               type="single"
               variant="outline"
               value={order}
-              onValueChange={(val) => val && changeOrder(val as typeof order)}
+              onValueChange={(val) =>
+                updateListingsQuery({ order: val as typeof order })
+              }
             >
               <ToggleGroupItem value="asc">Asc</ToggleGroupItem>
               <ToggleGroupItem value="desc">Desc</ToggleGroupItem>
@@ -170,8 +164,7 @@ export default function DashboardPage() {
             page={page}
             limit={limit}
             totalPages={data?.pagination?.totalPages ?? 1}
-            changePage={changePage}
-            changeLimit={changeLimit}
+            updateListingsQuery={updateListingsQuery}
           />
         </>
       )}

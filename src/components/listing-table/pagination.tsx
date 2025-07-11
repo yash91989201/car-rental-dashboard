@@ -21,16 +21,14 @@ type TablePaginationProps = {
   page: number;
   limit: number;
   totalPages: number;
-  changeLimit: (limit: number) => void;
-  changePage: (page: number) => void;
+  updateListingsQuery: (updates: Partial<TablePaginationProps>) => void;
 };
 
 export const TablePagination = ({
   page,
   limit,
   totalPages,
-  changePage,
-  changeLimit,
+  updateListingsQuery,
 }: TablePaginationProps) => {
   return (
     <div className="my-12 flex flex-col items-end gap-3">
@@ -41,13 +39,13 @@ export const TablePagination = ({
               className={
                 page === 1 ? "pointer-events-none opacity-50" : undefined
               }
-              onClick={() => changePage(page - 1)}
+              onClick={() => updateListingsQuery({ page: page - 1 })}
             />
           </PaginationItem>
           {[...Array<number>(totalPages)].map((_, i) => (
             <PaginationItem key={i}>
               <PaginationLink
-                onClick={() => changePage(i + 1)}
+                onClick={() => updateListingsQuery({ page: i + 1 })}
                 isActive={page === i + 1}
               >
                 {i + 1}
@@ -61,7 +59,7 @@ export const TablePagination = ({
                   ? "pointer-events-none opacity-50"
                   : undefined
               }
-              onClick={() => changePage(page + 1)}
+              onClick={() => updateListingsQuery({ page: page + 1 })}
             />
           </PaginationItem>
         </PaginationContent>
@@ -76,7 +74,10 @@ export const TablePagination = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {[10, 20, 30, 40, 50].map((size) => (
-              <DropdownMenuItem key={size} onClick={() => changeLimit(size)}>
+              <DropdownMenuItem
+                key={size}
+                onClick={() => updateListingsQuery({ limit: size })}
+              >
                 {size}
               </DropdownMenuItem>
             ))}
