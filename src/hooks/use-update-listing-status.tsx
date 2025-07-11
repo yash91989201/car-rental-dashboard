@@ -7,8 +7,8 @@ import { getQueryClient } from "@/lib/query-client";
 import { updateListingStatus } from "@/lib/queries";
 // TYPES
 import type {
-  GetListingOutputType,
   GetListingQueryType,
+  GetListingOutputType,
   GetListingsOutputType,
   UpdateListingStatusInputType,
   UpdateListingStatusQueryType,
@@ -20,6 +20,8 @@ export function useUpdateListingStatus() {
   const queryClient = getQueryClient();
   const listingsQuery = useGetListingsQuery();
 
+  const getListingsQueryKey = queryKeys.getListings(listingsQuery);
+
   return useMutation({
     mutationFn: ({
       query,
@@ -30,16 +32,14 @@ export function useUpdateListingStatus() {
     }) => updateListingStatus(query, input),
     onMutate: async ({ query, input }) => {
       await queryClient.cancelQueries({
-        queryKey: queryKeys.getListings(listingsQuery),
+        queryKey: getListingsQueryKey,
       });
 
       const previousListingsData =
-        queryClient.getQueryData<GetListingsOutputType>(
-          queryKeys.getListings(listingsQuery),
-        );
+        queryClient.getQueryData<GetListingsOutputType>(getListingsQueryKey);
 
       queryClient.setQueryData<GetListingsOutputType>(
-        queryKeys.getListings(listingsQuery),
+        getListingsQueryKey,
         (old) => {
           if (!old) return old;
 
@@ -98,7 +98,7 @@ export function useUpdateListingStatus() {
     onError: (err, _, context) => {
       if (context?.previousListingsData) {
         queryClient.setQueryData(
-          queryKeys.getListings(listingsQuery),
+          getListingsQueryKey,
           context.previousListingsData,
         );
       }
@@ -119,7 +119,7 @@ export function useUpdateListingStatus() {
 
     onSettled: async (_, __, variables) => {
       await queryClient.invalidateQueries({
-        queryKey: queryKeys.getListings(listingsQuery),
+        queryKey: getListingsQueryKey,
       });
 
       await queryClient.invalidateQueries({
