@@ -7,6 +7,7 @@ import { getQueryClient } from "@/lib/query-client";
 import { deleteListing } from "@/lib/queries";
 // CUSTOM HOOKS
 import { useGetListingsQuery } from "./use-get-listings-query";
+import type { GetListingsOutputType } from "@/lib/types";
 
 export const useDeleteListing = () => {
   const queryClient = getQueryClient();
@@ -14,10 +15,46 @@ export const useDeleteListing = () => {
 
   return useMutation({
     mutationFn: deleteListing,
+    onMutate: async ({ id }) => {
+      await queryClient.cancelQueries({
+        queryKey: queryKeys.getListings(listingsQuery),
+      });
+
+      const previousListingData =
+        queryClient.getQueryData<GetListingsOutputType>(
+          queryKeys.getListings(listingsQuery),
+        );
+
+      queryClient.setQueryData<GetListingsOutputType>(
+        queryKeys.getListings(listingsQuery),
+        (old) => {
+          if (!old) return old;
+
+          const filteredListings =
+            old.data?.listings.filter((listing) => listing.id !== id) ?? [];
+
+          const updatedListingData = {
+            ...old,
+            data: {
+              listings: filteredListings,
+            },
+          };
+
+          return updatedListingData;
+        },
+      );
+      return { previousListingData };
+    },
     onSuccess: (res) => {
       toast.success(res.message);
     },
-    onError: (error) => {
+    onError: (error, _, context) => {
+      if (context?.previousListingData) {
+        queryClient.setQueryData(
+          queryKeys.getListings(listingsQuery),
+          context.previousListingData,
+        );
+      }
       toast.error(error.message);
     },
     onSettled: async (_, __, variables) => {

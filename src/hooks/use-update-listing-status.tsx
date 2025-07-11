@@ -85,15 +85,15 @@ export function useUpdateListingStatus() {
     },
 
     onSettled: async (_, __, variables) => {
-      await queryClient.refetchQueries({
+      await queryClient.invalidateQueries({
         queryKey: queryKeys.getListings(listingsQuery),
       });
 
-      await queryClient.refetchQueries({
+      await queryClient.invalidateQueries({
         queryKey: queryKeys.getListing({ id: variables.query.id }),
       });
 
-      await queryClient.refetchQueries({
+      await queryClient.invalidateQueries({
         queryKey: queryKeys.getListingLog({ id: variables.query.id }),
       });
     },
