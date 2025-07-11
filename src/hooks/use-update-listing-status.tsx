@@ -7,6 +7,8 @@ import { getQueryClient } from "@/lib/query-client";
 import { updateListingStatus } from "@/lib/queries";
 // TYPES
 import type {
+  GetListingOutputType,
+  GetListingQueryType,
   GetListingsOutputType,
   UpdateListingStatusInputType,
   UpdateListingStatusQueryType,
@@ -31,7 +33,7 @@ export function useUpdateListingStatus() {
         queryKey: queryKeys.getListings(listingsQuery),
       });
 
-      const previousListingData =
+      const previousListingsData =
         queryClient.getQueryData<GetListingsOutputType>(
           queryKeys.getListings(listingsQuery),
         );
@@ -62,7 +64,31 @@ export function useUpdateListingStatus() {
           return updatedListingData;
         },
       );
-      return { previousListingData };
+
+      const previousListingData = queryClient.getQueryData<GetListingQueryType>(
+        queryKeys.getListing({ id: query.id }),
+      );
+
+      queryClient.setQueryData<GetListingOutputType>(
+        queryKeys.getListing({ id: query.id }),
+        (old) => {
+          if (!old?.data?.listing) return old;
+
+          const updatedListingData = {
+            ...old,
+            data: {
+              listing: {
+                ...old.data.listing,
+                status: input.status,
+              },
+            },
+          };
+
+          return updatedListingData;
+        },
+      );
+
+      return { previousListingData, previousListingsData };
     },
 
     onSuccess: ({ message }) => {
@@ -70,9 +96,16 @@ export function useUpdateListingStatus() {
     },
 
     onError: (err, _, context) => {
-      if (context?.previousListingData) {
+      if (context?.previousListingsData) {
         queryClient.setQueryData(
           queryKeys.getListings(listingsQuery),
+          context.previousListingsData,
+        );
+      }
+
+      if (context?.previousListingData) {
+        queryClient.setQueryData(
+          queryKeys.getListing({ id: context.previousListingData.id }),
           context.previousListingData,
         );
       }

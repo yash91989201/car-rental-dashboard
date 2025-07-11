@@ -82,21 +82,14 @@ export default function ListingPage() {
 
   const listing = data?.data?.listing;
 
-  const {
-    mutateAsync: updateListingStatus,
-    isPending: isUpdatingStatus,
-    variables: updateStatusVariables,
-  } = useUpdateListingStatus();
+  const { mutateAsync: approveListing, isPending: isApprovingListing } =
+    useUpdateListingStatus();
+
+  const { mutateAsync: rejectListing, isPending: isRejectingListing } =
+    useUpdateListingStatus();
+
   const { mutateAsync: deleteListing, isPending: isDeletingListing } =
     useDeleteListing();
-
-  const approveListing = (id: string) => {
-    void updateListingStatus({ query: { id }, input: { status: "approved" } });
-  };
-
-  const rejectListing = (id: string) => {
-    void updateListingStatus({ query: { id }, input: { status: "rejected" } });
-  };
 
   const handleDeleteListing = async () => {
     await deleteListing({ id: listingId });
@@ -177,12 +170,16 @@ export default function ListingPage() {
           disabled={
             listing.status !== "rejected" && listing.status !== "pending"
           }
-          onClick={() => approveListing(listing.id)}
+          onClick={() =>
+            approveListing({
+              query: { id: listing.id },
+              input: { status: "approved" },
+            })
+          }
         >
-          {isUpdatingStatus &&
-            updateStatusVariables.input.status === "approved" && (
-              <LoaderCircle className="mr-1.5 size-4.5 animate-spin" />
-            )}
+          {isApprovingListing && (
+            <LoaderCircle className="mr-1.5 size-4.5 animate-spin" />
+          )}
           Approve
         </Button>
 
@@ -192,12 +189,16 @@ export default function ListingPage() {
           disabled={
             listing.status !== "approved" && listing.status !== "pending"
           }
-          onClick={() => rejectListing(listing.id)}
+          onClick={() =>
+            rejectListing({
+              query: { id: listing.id },
+              input: { status: "rejected" },
+            })
+          }
         >
-          {isUpdatingStatus &&
-            updateStatusVariables.input.status === "rejected" && (
-              <LoaderCircle className="mr-1.5 size-4.5 animate-spin" />
-            )}
+          {isRejectingListing && (
+            <LoaderCircle className="mr-1.5 size-4.5 animate-spin" />
+          )}
           Reject
         </Button>
 
