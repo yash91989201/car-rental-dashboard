@@ -49,7 +49,12 @@ export default async function handler(
     const [listingsCount] = await db
       .select({ count: countDistinct(listing.id) })
       .from(listing)
-      .where(isNull(listing.deletedAt));
+      .where(
+        and(
+          status !== "all" ? eq(listing.status, status) : undefined,
+          isNull(listing.deletedAt),
+        ),
+      );
 
     if (!listingsCount) {
       throw new Error("Failed to get total listings count");

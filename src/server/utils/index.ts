@@ -77,7 +77,6 @@ export function enforceHandlerMethod(req: NextApiRequest) {
 
 export function handleApiError(res: NextApiResponse, error: unknown) {
   if (error instanceof Error) {
-    console.log(error.message);
     res.status(400).json({
       success: false,
       message: error.message,
