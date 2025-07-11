@@ -36,6 +36,10 @@ export default async function handler(
       throw new Error("Listing not found or already deleted");
     }
 
+    console.log({
+      adminId: session.user.id,
+      listingId: query.id,
+    });
     await db.insert(auditLog).values({
       action: "delete",
       adminId: session.user.id,
